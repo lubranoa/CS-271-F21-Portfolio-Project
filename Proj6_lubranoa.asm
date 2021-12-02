@@ -1,10 +1,10 @@
-TITLE Program Template     (template.asm)
+TITLE Program Template     (Proj6_lubranoa.asm)
 
-; Author: 
-; Last Modified:
-; OSU email address: ONID_ID@oregonstate.edu
-; Course number/section:   CS271 Section ???
-; Project Number:                 Due Date:
+; Author:  Alexander Lubrano
+; Last Modified:  12/02/2021
+; OSU email address: lubranoa@oregonstate.edu
+; Course number/section:   CS271 Section 400
+; Project Number:  6 - String Primitives and Macros        Due Date:  12/05/2021
 ; Description: This file is provided as a template from which you may work
 ;              when developing assembly projects in CS271.
 
