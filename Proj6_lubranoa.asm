@@ -22,7 +22,11 @@ INCLUDE Irvine32.inc
 ; Returns: 
 ; --------------------------------------------------------------------------------------
 mGetString MACRO [placeholder1, placeholder2]
-	; body
+	; display prompt
+
+	; get user input
+
+	; store in memory
 ENDM
 
 ; --------------------------------------------------------------------------------------
@@ -37,7 +41,8 @@ ENDM
 ; Returns: 
 ; --------------------------------------------------------------------------------------
 mDisplayString MACRO [placeholder1, placeholder2]
-	; body
+	; Prints string at passed address
+
 ENDM
 
 ; (insert constant definitions here)
