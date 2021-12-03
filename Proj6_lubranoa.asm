@@ -13,7 +13,8 @@ INCLUDE Irvine32.inc
 ; --------------------------------------------------------------------------------------
 ; Name: mGetString
 ;
-; Description goes here
+; Dislpays a prompt to the user, gets the input from the user, and stores it in a 
+;	  memory location.
 ;
 ; Preconditions: 
 ;
@@ -32,7 +33,7 @@ ENDM
 ; --------------------------------------------------------------------------------------
 ; Name: mDisplayString
 ;
-; Description goes here
+; Prints a string from a provided memory location.
 ;
 ; Preconditions: 
 ;
@@ -40,8 +41,25 @@ ENDM
 ;
 ; Returns: 
 ; --------------------------------------------------------------------------------------
-mDisplayString MACRO [placeholder1, placeholder2]
+mDisplayString	 MACRO   locationOfStr, lengthOfStr
 	; Prints string at passed address
+	local	_writeLoop
+	push	eax
+	push	ecx
+	push	esi
+
+	mov		ecx, lengthOfStr
+	mov		esi, locationOfStr
+	cld
+
+	_writeLoop:
+	   LODSB	
+		call	WriteChar
+		loop	_writeLoop
+
+	pop		esi
+	pop		ecx
+	pop		eax
 
 ENDM
 
