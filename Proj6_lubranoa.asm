@@ -1,7 +1,7 @@
 TITLE Program Template     (Proj6_lubranoa.asm)
 
 ; Author:  Alexander Lubrano
-; Last Modified:  12/02/2021
+; Last Modified:  12/03/2021
 ; OSU email address: lubranoa@oregonstate.edu
 ; Course number/section:   CS271 Section 400
 ; Project Number:  6 - String Primitives and Macros        Due Date:  12/05/2021
@@ -10,7 +10,35 @@ TITLE Program Template     (Proj6_lubranoa.asm)
 
 INCLUDE Irvine32.inc
 
-; (insert macro definitions here)
+; --------------------------------------------------------------------------------------
+; Name: mGetString
+;
+; Description goes here
+;
+; Preconditions: 
+;
+; Receives:
+;
+; Returns: 
+; --------------------------------------------------------------------------------------
+mGetString MACRO [placeholder1, placeholder2]
+	; body
+ENDM
+
+; --------------------------------------------------------------------------------------
+; Name: mDisplayString
+;
+; Description goes here
+;
+; Preconditions: 
+;
+; Receives:
+;
+; Returns: 
+; --------------------------------------------------------------------------------------
+mDisplayString MACRO [placeholder1, placeholder2]
+	; body
+ENDM
 
 ; (insert constant definitions here)
 
@@ -26,6 +54,40 @@ main PROC
 	Invoke ExitProcess,0	; exit to operating system
 main ENDP
 
-; (insert additional procedures here)
+; --------------------------------------------------------------------------------------
+; Name: ReadVal
+;
+; Description goes here
+;
+; Preconditions: 
+;
+; Postconditions:
+;
+; Receives:
+;
+; Returns: 
+; --------------------------------------------------------------------------------------
+ReadVal PROC
+
+	ret
+ReadVal ENDP
+
+; --------------------------------------------------------------------------------------
+; Name: WriteVal
+;
+; Description goes here
+;
+; Preconditions: 
+;
+; Postconditions:
+;
+; Receives:
+;
+; Returns: 
+; --------------------------------------------------------------------------------------
+WriteVal PROC
+
+	ret
+WriteVal ENDP
 
 END main
