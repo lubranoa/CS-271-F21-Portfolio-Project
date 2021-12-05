@@ -1,14 +1,14 @@
-Microsoft (R) Macro Assembler Version 14.29.30136.0	    10/11/21 10:56:49
-#Program Template     (template.asm			     Page 1 - 1
+Microsoft (R) Macro Assembler Version 14.29.30137.0	    12/05/21 11:28:41
+)Program Template     (Proj6_lubranoa.asm		     Page 1 - 1
 
 
-				TITLE Program Template     (template.asm)
+				TITLE Program Template     (Proj6_lubranoa.asm)
 
-				; Author: 
-				; Last Modified:
-				; OSU email address: ONID_ID@oregonstate.edu
-				; Course number/section:   CS271 Section ???
-				; Project Number:                 Due Date:
+				; Author:  Alexander Lubrano
+				; Last Modified:  12/04/2021
+				; OSU email address: lubranoa@oregonstate.edu
+				; Course number/section:   CS271 Section 400
+				; Project Number:  6 - String Primitives and Macros        Due Date:  12/05/2021
 				; Description: This file is provided as a template from which you may work
 				;              when developing assembly projects in CS271.
 
@@ -31,31 +31,579 @@ Microsoft (R) Macro Assembler Version 14.29.30136.0	    10/11/21 10:56:49
 			      C .LIST
 			      C 
 
-				; (insert macro definitions here)
+				; --------------------------------------------------------------------------------------
+				; Name: mGetString
+				;
+				; Dislpays a prompt to the user, gets the input from the user, stores it in a memory
+				;	  location, and returns the number of characters entered in EAX for validation.
+				;
+				; Preconditions: Do not use EAX, ECX, or EDX as arguments. Prompt string and string array
+				;	  at location of userStrLocation must be a string Byte array. The userStrBuffer is 
+				;	  the buffer size (length of the string array)
+				;
+				; Receives:
+				;	  promptStr = address of prompt string array
+				;	  userStrLocation = address of temp user string holder
+				;	  userStrBuffer	  = length of string array
+				;
+				; Returns: 
+				;	  userStrLocation = address of new user-entered string
+				;				  EAX = number of characters entered
+				;
+				; --------------------------------------------------------------------------------------
+				mGetString MACRO promptStr, userStrLocation, userStrBuffer
+					push	ecx
+					push	edx
+					
+					; display prompt
+					mDisplayString	promptStr
 
-				; (insert constant definitions here)
+					; Get user input and store at memory location in EDX
+					mov		edx, userStrLocation	; Replaced by a memory location to store an entered string
+					mov		ecx, userStrBuffer		; Replaced by an integer of how large the buffer is
+					call	ReadString
+
+					; ----------------------------------------------------------------------------------
+					; The EAX register is not preserved or restored because it will hold the number of 
+					;	  entered characters, excluding a null terminator, which will be used to check
+					;	  the user entered nothing or something too big.
+					;
+					; ----------------------------------------------------------------------------------
+					pop		edx
+					pop		ecx
+
+				ENDM
+
+				; --------------------------------------------------------------------------------------
+				; Name: mDisplayString
+				;
+				; Prints a string from a provided memory location.
+				;
+				; Preconditions: Do not use EDX as an argument. Placeholder argument must be a 4 Byte
+				;     memory location. The array at that location must be a string Byte array.
+				;
+				; Receives:
+				;	  strLocation = string array address
+				;
+				; Returns: None
+				;
+				; --------------------------------------------------------------------------------------
+				mDisplayString	 MACRO   strLocation
+					
+					; Prints string Byte array to console
+					push	edx
+					mov		edx, strLocation	; strLocation placeholder is replaced by a memory offest
+					call	WriteString
+					pop		edx
+
+				ENDM
+
+ = 80000000			MIN_VALUE	 = 80000000h
+ = 7FFFFFFF			MAX_VALUE	 = 7FFFFFFFh
+ = 0000000B			MAX_STR_SIZE = 11
+ = 0000002B			PLUS_ASCII	 = 43
+ = 0000002D			MINUS_ASCII	 = 45
+ = 00000030			ZERO_ASCII	 = 48
+ = 00000039			NINE_ASCII	 = 57
 
  00000000			.data
-
-				; (insert variable definitions here)
+				; Descriptive string Byte arrays for printing to console
+ 00000000 43 53 20 32 37	titleStr	BYTE	"CS 271 ASSIGNMENT 6: Designing Low-Level I/O Procedures",13,10,"Written by: Alexander Lubrano",13,10,0
+	   31 20 41 53 53
+	   49 47 4E 4D 45
+	   4E 54 20 36 3A
+	   20 44 65 73 69
+	   67 6E 69 6E 67
+	   20 4C 6F 77 2D
+	   4C 65 76 65 6C
+	   20 49 2F 4F 20
+	   50 72 6F 63 65
+	   64 75 72 65 73
+	   0D 0A 57 72 69
+	   74 74 65 6E 20
+	   62 79 3A 20 41
+	   6C 65 78 61 6E
+	   64 65 72 20 4C
+	   75 62 72 61 6E
+	   6F 0D 0A 00
+ 00000059 50 6C 65 61 73	introStr	BYTE	"Please provide 10 signed decimal integers.",13,10,
+	   65 20 70 72 6F
+	   76 69 64 65 20
+	   31 30 20 73 69
+	   67 6E 65 64 20
+	   64 65 63 69 6D
+	   61 6C 20 69 6E
+	   74 65 67 65 72
+	   73 2E 0D 0A 45
+	   61 63 68 20 6E
+	   75 6D 62 65 72
+	   20 6E 65 65 64
+	   73 20 74 6F 20
+	   62 65 20 73 6D
+	   61 6C 6C 20 65
+	   6E 6F 75 67 68
+	   20 74 6F 20 66
+	   69 74 20 69 6E
+	   73 69 64 65 20
+	   61 61 61 20 33
+	   32 2D 62 69 74
+	   20 72 65 67 69
+	   73 74 65 72 2E
+	   20 41 66 74 65
+	   72 20 79 6F 75
+	   20 68 61 76 65
+	   0D 0A 66 69 6E
+	   69 73 68 65 64
+	   20 65 6E 74 65
+	   72 69 6E 67 20
+	   74 68 65 20 72
+	   61 77 20 6E 75
+	   6D 62 65 72 73
+	   2C 20 74 68 69
+	   73 20 70 72 6F
+	   67 72 61 6D 20
+	   77 69 6C 6C 20
+	   64 69 73 70 6C
+	   61 79 20 61 20
+	   6C 69 73 74 20
+	   6F 66 20 74 68
+	   65 20 69 6E 74
+	   65 67 65 72 73
+	   2C 20 74 68 65
+	   69 72 0D 0A 73
+	   75 6D 2C 20 61
+	   6E 64 20 74 68
+	   65 69 72 20 61
+	   76 65 72 61 67
+	   65 20 76 61 6C
+	   75 65 2E 0D 0A
+	   00
+									"Each number needs to be small enough to fit inside aaa 32-bit register. After you have",13,10,
+									"finished entering the raw numbers, this program will display a list of the integers, their",13,10,
+									"sum, and their average value.",13,10,0
+ 00000159 50 6C 65 61 73	promptStr	BYTE	"Please enter a signed integer: ",0
+	   65 20 65 6E 74
+	   65 72 20 61 20
+	   73 69 67 6E 65
+	   64 20 69 6E 74
+	   65 67 65 72 3A
+	   20 00
+ 00000179 45 52 52 4F 52	errorStr	BYTE	"ERROR: You did not enter a signed integer or your integer was too big.",13,10,"Please try again: ",0
+	   3A 20 59 6F 75
+	   20 64 69 64 20
+	   6E 6F 74 20 65
+	   6E 74 65 72 20
+	   61 20 73 69 67
+	   6E 65 64 20 69
+	   6E 74 65 67 65
+	   72 20 6F 72 20
+	   79 6F 75 72 20
+	   69 6E 74 65 67
+	   65 72 20 77 61
+	   73 20 74 6F 6F
+	   20 62 69 67 2E
+	   0D 0A 50 6C 65
+	   61 73 65 20 74
+	   72 79 20 61 67
+	   61 69 6E 3A 20
+	   00
+ 000001D4 59 6F 75 20 65	listStr		BYTE	"You entered the following numbers: ",13,10,0
+	   6E 74 65 72 65
+	   64 20 74 68 65
+	   20 66 6F 6C 6C
+	   6F 77 69 6E 67
+	   20 6E 75 6D 62
+	   65 72 73 3A 20
+	   0D 0A 00
+ 000001FA 54 68 65 20 73	sumStr		BYTE	"The sum of these numbers is: ",0
+	   75 6D 20 6F 66
+	   20 74 68 65 73
+	   65 20 6E 75 6D
+	   62 65 72 73 20
+	   69 73 3A 20 00
+ 00000218 54 68 65 20 74	avgStr		BYTE	"The truncated average is: ",0
+	   72 75 6E 63 61
+	   74 65 64 20 61
+	   76 65 72 61 67
+	   65 20 69 73 3A
+	   20 00
+ 00000233 48 6F 70 65 20	byeStr		BYTE	"Hope this was fun!",13,10,"- Alex",0
+	   74 68 69 73 20
+	   77 61 73 20 66
+	   75 6E 21 0D 0A
+	   2D 20 41 6C 65
+	   78 00
+				; Data manipulation helpers
+ 0000024E  0000000D [		userStr		BYTE	13 DUP(0)
+	    00
+	   ]
+ 0000025B 00000001		mulHelper	SDWORD	1			; Holds a value to help multiply values in ASCII to digit conversion
+ 0000025F 00000000		userNum		SDWORD	0
+ 00000263  0000000A [		userArray	SDWORD	10 DUP(?)
+	    00000000
+	   ]
 
  00000000			.code
  00000000			main PROC
 
-				; (insert executable instructions here)
+					mDisplayString offset titleStr
+ 00000000  52		     1		push	edx
+ 00000001  BA 00000000 R     1		mov		edx, offset titleStr	; strLocation placeholder is replaced by a memory offest
+ 00000006  E8 00000000 E     1		call	WriteString
+ 0000000B  5A		     1		pop		edx
+ 0000000C  E8 00000000 E		call	CrLf
+
+					mDisplayString offset introStr
+ 00000011  52		     1		push	edx
+ 00000012  BA 00000059 R     1		mov		edx, offset introStr	; strLocation placeholder is replaced by a memory offest
+ 00000017  E8 00000000 E     1		call	WriteString
+ 0000001C  5A		     1		pop		edx
+ 0000001D  E8 00000000 E		call	CrLf
+
+ 00000022  B9 0000000A			mov		ecx, 10
+ 00000027				_getNumberLoop:
+						
+ 00000027  68 00000159 R			push	offset promptStr
+ 0000002C  68 00000179 R			push	offset errorStr
+ 00000031  68 0000024E R			push	offset userStr
+ 00000036  68 0000000D				push	DWORD ptr SIZEOF userStr
+ 0000003B  68 0000025F R			push	offset userNum
+ 00000040  68 0000025B R			push	offset mulHelper
+ 00000045  E8 00000042				call	ReadVal
+
+						
+ 0000004A  BF 00000263 R			mov		edi, offset	userArray		
+ 0000004F  B8 0000000A				mov		eax, 10
+ 00000054  2B C1				sub		eax, ecx
+ 00000056  BB 00000004				mov		ebx, TYPE userArray
+ 0000005B  F7 E3				mul		ebx
+ 0000005D  8B D8				mov		ebx, eax
+ 0000005F  A1 0000025F R			mov		eax, userNum
+ 00000064  89 04 1F				mov		[edi+ebx], eax
+
+ 00000067  BF 0000025F R			mov		edi, offset userNum
+ 0000006C  C7 07 00000000			mov		SDWORD ptr [edi], 0
+
+ 00000072  E2 B3				loop	_getNumberLoop
+
+					mDisplayString offset byeStr
+ 00000074  52		     1		push	edx
+ 00000075  BA 00000233 R     1		mov		edx, offset byeStr	; strLocation placeholder is replaced by a memory offest
+ 0000007A  E8 00000000 E     1		call	WriteString
+ 0000007F  5A		     1		pop		edx
+ 00000080  E8 00000000 E		call	CrLf
 
 					Invoke ExitProcess,0	; exit to operating system
- 00000000  6A 00	   *	    push   +000000000h
- 00000002  E8 00000000 E   *	    call   ExitProcess
- 00000007			main ENDP
+ 00000085  6A 00	   *	    push   +000000000h
+ 00000087  E8 00000000 E   *	    call   ExitProcess
+ 0000008C			main ENDP
 
-				; (insert additional procedures here)
+				; --------------------------------------------------------------------------------------
+				; Name: ReadVal
+				;
+				; Invokes the mGetString macro to get a user-entered number, then converts the string of
+				;	  characters to its numerical value, validating along the way that it has no symbols 
+				;	  or letters, small enough to fit inside a 32-bit register, and that the user did 
+				;	  not just enter nothing.
+				;
+				; Preconditions: 
+				;
+				; Postconditions:
+				;
+				; Receives:
+				;	  [ebp+28]  = address of prompt string array
+				;	  [ebp+24]  = address of error prompt string array
+				;	  [ebp+20]  = address of the temp user string array
+				;	  [ebp+16]  = number of characters the temp user string array can hold
+				;	  [ebp+12]  = address of temp user number label
+				;	  [ebp+8]   = address of multiplication helper label
+				;
+				; Returns: 
+				;	  EAX		= converted number from user string
+				; --------------------------------------------------------------------------------------
+ 0000008C			ReadVal PROC
+					; Preserve used registers and assign static stack-fram pointer
+ 0000008C  55				push	ebp
+ 0000008D  8B EC			mov		ebp, esp
+ 0000008F  50				push	eax
+ 00000090  53				push	ebx
+ 00000091  51				push	ecx
+ 00000092  52				push	edx			; May be overwritten after IMUL instructions so, preserve EDX just in case
+ 00000093  56				push	esi
+ 00000094  57				push	edi
+
+					; Get new number string using mGetString macro with placeholders, address of promptStr,
+					; address of userStr array label, and size of userStr array
+					mGetString	DWORD ptr [ebp+28], DWORD ptr [ebp+20], DWORD ptr [ebp+16]
+ 00000095  51		     1		push	ecx
+ 00000096  52		     1		push	edx
+ 00000097  52		     2		push	edx
+ 00000098  8B 55 1C	     2		mov		edx, DWORD ptr [ebp+28]	; strLocation placeholder is replaced by a memory offest
+ 0000009B  E8 00000000 E     2		call	WriteString
+ 000000A0  5A		     2		pop		edx
+ 000000A1  8B 55 14	     1		mov		edx, DWORD ptr [ebp+20]	; Replaced by a memory location to store an entered string
+ 000000A4  8B 4D 10	     1		mov		ecx, DWORD ptr [ebp+16]		; Replaced by an integer of how large the buffer is
+ 000000A7  E8 00000000 E     1		call	ReadString
+ 000000AC  5A		     1		pop		edx
+ 000000AD  59		     1		pop		ecx
+ 000000AE  EB 33			jmp		_validate
+
+					; Get a different numeer string after an invalid input
+ 000000B0				_invalidInput:
+ 000000B0  FF 75 14				push	DWORD ptr [ebp+20]
+ 000000B3  E8 000000F1				call	clearUserStr			; Clear userStr helper label to prep for new input
+ 000000B8  8B 7D 0C				mov		edi, [ebp+12]
+ 000000BB  C7 07 00000000			mov		SDWORD ptr [edi], 0		; Reset the userNum helper label to 0
+ 000000C1  8B 7D 08				mov		edi, [ebp+8]
+ 000000C4  C7 07 00000001			mov		SDWORD ptr [edi], 1		; Reset the mulHelper label to 1
+
+						; Get another number string from user using the same macro with placeholders, address 
+						; of errorStr, address of userStr array label, and size of userStr array
+						mGetString	DWORD ptr [ebp+24], DWORD ptr[ebp+20], DWORD ptr [ebp+16]
+ 000000CA  51		     1		push	ecx
+ 000000CB  52		     1		push	edx
+ 000000CC  52		     2		push	edx
+ 000000CD  8B 55 18	     2		mov		edx, DWORD ptr [ebp+24]	; strLocation placeholder is replaced by a memory offest
+ 000000D0  E8 00000000 E     2		call	WriteString
+ 000000D5  5A		     2		pop		edx
+ 000000D6  8B 55 14	     1		mov		edx, DWORD ptr[ebp+20]	; Replaced by a memory location to store an entered string
+ 000000D9  8B 4D 10	     1		mov		ecx, DWORD ptr [ebp+16]		; Replaced by an integer of how large the buffer is
+ 000000DC  E8 00000000 E     1		call	ReadString
+ 000000E1  5A		     1		pop		edx
+ 000000E2  59		     1		pop		ecx
+					
+					; ----------------------------------------------------------------------------------
+					; Check user's input for validity. The user string number cannot be nothing, cannot
+					;	  be greater than 11 digits long, cannot contain characters other than -, +, or
+					;	  the digits 0 through 9, nor can it be larger than what a 32-bit register can
+					;	  contain (-2^31 to 2^31 - 1). 
+					;
+					; The number string can be 11 digits long because a number string starting with a
+					;	  +/- will be 10 digits long, which is the number of digits of the max value a 
+					;	  32-bit register can hold, i.e., -2^31 is equal tO -2,147,483,648, which is 10 
+					;	  digits and a sign. 
+					;
+					; ----------------------------------------------------------------------------------
+ 000000E3				_validate:
+ 000000E3  83 F8 00				cmp		eax, 0
+ 000000E6  74 C8				jz		_invalidInput			; If user input nothing, jump up to _invalidInput block
+ 000000E8  83 F8 0B				cmp		eax, MAX_STR_SIZE
+ 000000EB  77 C3				ja		_invalidInput			; If user input something too large, jump up to _invalidInput block
+
+						; ------------------------------------------------------------------------------
+						; At this point, if number string has either sign at the 1st index, we can start 
+						;	  to convert and check for more accurate out of range conditions.
+						;
+						; ------------------------------------------------------------------------------
+ 000000ED  8B 75 14				mov		esi, [ebp+20]
+ 000000F0  80 3E 2B				cmp		BYTE ptr [esi], PLUS_ASCII
+ 000000F3  74 0A				jz		_convert				; If user input has a '+' at index 0, jump to convert
+ 000000F5  80 3E 2D				cmp		BYTE ptr [esi], MINUS_ASCII
+ 000000F8  74 05				jz		_convert				; If user input has a '-' at index 0, jump to convert
+ 000000FA  83 F8 0B				cmp		eax, MAX_STR_SIZE
+ 000000FD  74 B1				jz		_invalidInput			; If user input has 11 characters but no sign, it's too big so, jump to _invalidInput
+						
+					; ----------------------------------------------------------------------------------
+					; Convert the string to an integer. Each character is checked for being a digit 0-9,
+					;	  and, if it is not, the number string is invalid, unless it is a + or - and it
+					;	  is the leftmost character in the string.
+					;
+					; This conversion relies on starting at the last character in the array, and moving
+					;	  left until the beginning is reached. Each successive iteration is multiplied
+					;	  by a power of 10 to get its proper decimal position, then added to a running 
+					;     total.
+					;
+					; ----------------------------------------------------------------------------------
+ 000000FF				_convert:		
+						
+ 000000FF  8B C8				mov		ecx, eax				; Initialize ECX to the number of entered characters
+ 00000101  8B 75 14				mov		esi, [ebp+20]			; Initialize ESI to point to address of user input string
+ 00000104  03 F1				add		esi, ecx
+ 00000106  4E					dec		esi						; Points ESI at the last value of the user string
+ 00000107  8B 7D 0C				mov		edi, [ebp+12]			; Initialize EDI to point to the temp user number label's address
+ 0000010A  BB 0000000A				mov		ebx, 10					; Initialize EBX to hold the value 10
+						
+						
+						; Top of loop
+ 0000010F					_convertLoop:
+ 0000010F  33 C0					xor		eax, eax					; Clear EAX each iteration
+ 00000111  83 F9 01					cmp		ecx, 1
+ 00000114  74 3B					jz		_lastCharacter				; If ECX is 1, current character is leftmost(last) so, jump to _lastCharacter
+ 00000116  80 3E 30					cmp		BYTE ptr [esi], ZERO_ASCII
+ 00000119  72 95					jb		_invalidInput
+ 0000011B  80 3E 39					cmp		BYTE ptr [esi], NINE_ASCII
+ 0000011E  77 90					ja		_invalidInput				; Else, if current character != any digit ASCII, number is invalid so, jump to _invalidInput
+							
+						; Update value in userNum helper data label
+ 00000120					_updateUserNum:
+							
+							; Get character's actual value (all characters that reach this block are digits 0-9)
+ 00000120  8A 06					mov		al, [esi]
+ 00000122  2C 30					sub		al, ZERO_ASCII				; Subtract ZERO_ASCII value from character's ASCII value to get its numerical value
+							
+							; Multiply this iteration by its power of 10 (first iteration is multiplied by 1)
+ 00000124  56						push	esi
+ 00000125  52						push	edx
+ 00000126  8B 75 08					mov		esi, [ebp+8]				; Put address of multiplication helper in ESI
+ 00000129  F7 2E					imul	DWORD ptr [esi]				; Multiply value in EAX by value in multiplication helper
+ 0000012B  70 83					jo		_invalidInput				; If the multiplication resulted in an overflow condition, the number is too big
+ 0000012D  5A						pop		edx
+ 0000012E  5E						pop		esi
+
+							; Add the value in EAX to the value in the UserNum label to update running total
+ 0000012F  01 07					add		[edi], eax
+ 00000131  0F 80 FFFFFF79				jo		_invalidInput				; If addition resulted in an overflow condition, the number is too big
+							
+							; If this is the last or 2nd to last character, they must be handled differently
+ 00000137  83 F9 01					cmp		ecx, 1
+ 0000013A  74 51					jz		_end						; If this is the last digit, don't need to update mulHelper so, jump to _end
+ 0000013C  83 F9 02					cmp		ecx, 2
+ 0000013F  77 36					ja		_updateHelpers				; Else, if value is not 2nd to last, jump to _updateHelpers
+																; Otherwise, continue down
+
+ 00000141					_secondToLast:
+ 00000141  49						dec		ecx							; Pre-decrement ECX in case of jump to top of loop
+ 00000142  4E						dec		esi							; Pre-decrement ESI in case of jump to top of loop
+ 00000143  80 3E 30					cmp		BYTE ptr [esi], ZERO_ASCII
+ 00000146  72 C7					jb		_convertLoop
+ 00000148  80 3E 39					cmp		BYTE ptr [esi], NINE_ASCII
+ 0000014B  77 C2					ja		_convertLoop				; If the character is not a digit, loop back to top
+ 0000014D  41						inc		ecx
+ 0000014E  46						inc		esi
+ 0000014F  EB 26					jmp		_updateHelpers				; Otherwise, character = digit so, re-increment ECX and ESI then jump to _updateHelpers
+						
+ 00000151					_lastCharacter:
+ 00000151  80 3E 2D					cmp		BYTE ptr [esi], MINUS_ASCII
+ 00000154  74 19					jz		_convertNegative			; If last character ASCII = minus sign ASCII, jump to _convertNegative
+ 00000156  80 3E 2B					cmp		BYTE ptr [esi], PLUS_ASCII
+ 00000159  74 32					jz		_end						; Else, if last character ASCII = plus sign ASCII, jump to _end
+ 0000015B  80 3E 30					cmp		BYTE ptr [esi], ZERO_ASCII
+ 0000015E  0F 82 FFFFFF4C				jb		_invalidInput
+ 00000164  80 3E 39					cmp		BYTE ptr [esi], NINE_ASCII
+ 00000167  0F 87 FFFFFF43				ja		_invalidInput				; Else, if last character != digit ASCII, the number is invalid so, jump to _invalidInput
+ 0000016D  EB B1					jmp		_updateUserNum				; Else, last character = digit so, jump to _updateUserNum
+
+
+						; Convert negative string to negative integer
+ 0000016F					_convertNegative:
+ 0000016F  8B 07					mov		eax, [edi]
+ 00000171  F7 D8					neg		eax
+ 00000173  89 07					mov		[edi], eax
+ 00000175  EB 16					jmp		_end						; If execution reaches this block, it's done converting and can break out of loop
+
+						; Updates mulitplication helper and ESI for next iteration, only when not on last and sometimes 2nd to last iterations
+ 00000177					_updateHelpers:
+							
+							; Multiplies the value in the mulHelper label by 10 to get the next power of 10
+ 00000177  57						push	edi
+ 00000178  52						push	edx
+ 00000179  8B 7D 08					mov		edi, [ebp+8]
+ 0000017C  8B 07					mov		eax, [edi]					; Put current power of 10 value in EAX, then multiply by 10
+ 0000017E  F7 EB					imul	ebx
+ 00000180  0F 80 FFFFFF2A				jo		_invalidInput				; If this results in an overflow condition, the next value will too so, jump to _invalidInput
+ 00000186  89 07					mov		[edi], eax					; Otherwise, store the result in mulHelper
+ 00000188  5A						pop		edx
+ 00000189  5F						pop		edi
+							
+							; Decrement address in ESI to point to next character that is 1 Byte below current one in memory
+ 0000018A  4E						dec		esi
+							
+							; When ECX is 0, execution moves to next line of code below
+ 0000018B  E2 82					loop	_convertLoop				
+
+					; Clears the helper string, resets mulHelper to 1
+ 0000018D				_end:
+ 0000018D  FF 75 14				push	DWORD ptr [ebp+20]
+ 00000190  E8 00000014				call	clearUserStr
+ 00000195  8B 7D 08				mov		edi, [ebp+8]
+ 00000198  C7 07 00000001			mov		SDWORD ptr [edi], 1
+					
+					; Restore used registers, de-reference 24 Bytes of parameters, and return control to main
+ 0000019E  5F				pop		edi
+ 0000019F  5E				pop		esi
+ 000001A0  5A				pop		edx
+ 000001A1  59				pop		ecx
+ 000001A2  5B				pop		ebx
+ 000001A3  58				pop		eax
+ 000001A4  5D				pop		ebp
+ 000001A5  C2 0018			ret		24
+
+ 000001A8			ReadVal ENDP
+
+				; --------------------------------------------------------------------------------------
+				; Name: WriteVal
+				;
+				; Description goes here
+				;
+				; Preconditions: 
+				;
+				; Postconditions:
+				;
+				; Receives:
+				;
+				; Returns: 
+				; --------------------------------------------------------------------------------------
+ 000001A8			WriteVal PROC
+
+ 000001A8  C3				ret
+ 000001A9			WriteVal ENDP
+
+				; --------------------------------------------------------------------------------------
+				; Name: clearUserStr
+				;
+				; Clears the userStr helper array for a new entry by changing all the bytes to 0 excpt
+				;	  the null terminator.
+				;
+				; Preconditions: The helper array must be a 13 Byte string array, including the null
+				;	  terminator
+				;
+				; Postconditions: All used registers are preserved and restored.
+				;
+				; Receives:
+				;	  [ebp+8]  = address of userStr array
+				;
+				; Returns: 
+				;	  userStr  = empty 13-Byte array
+				; --------------------------------------------------------------------------------------
+ 000001A9			clearUserStr PROC
+					
+					; Preserve used registers and assign static stack-fram pointer
+ 000001A9  55				push	ebp
+ 000001AA  8B EC			mov		ebp, esp
+ 000001AC  51				push	ecx
+ 000001AD  57				push	edi
+
+					; Initialize ECX to the number of Bytes to replace and EDI to point to the address of the array to modify
+ 000001AE  B9 0000000C			mov		ecx, 12
+ 000001B3  8B 7D 08			mov		edi, [ebp+8]
+					
+					; Set each Byte in the array to 0
+ 000001B6				_clearLoop:
+ 000001B6  C6 07 00				mov		BYTE ptr [edi], 0
+ 000001B9  83 C7 01				add		edi, 1		; Increment address in EDI by 1 Byte
+ 000001BC  E2 F8				loop	_clearLoop
+
+					; Restore used registers, de-reference 4 Bytes of parameters, and return control to calling procedure
+ 000001BE  5F				pop		edi
+ 000001BF  59				pop		ecx
+ 000001C0  5D				pop		ebp
+ 000001C1  C2 0004			ret		4
+
+ 000001C4			clearUserStr ENDP
 
 				END main
-Microsoft (R) Macro Assembler Version 14.29.30136.0	    10/11/21 10:56:49
-#Program Template     (template.asm			     Symbols 2 - 1
+Microsoft (R) Macro Assembler Version 14.29.30137.0	    12/05/21 11:28:41
+)Program Template     (Proj6_lubranoa.asm		     Symbols 2 - 1
 
 
+
+
+Macros:
+
+                N a m e                 Type
+
+mDisplayString . . . . . . . . .	Proc
+mGetString . . . . . . . . . . .	Proc
 
 
 Structures and Unions:
@@ -146,8 +694,8 @@ Segments and Groups:
 
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
-_DATA  . . . . . . . . . . . . .	32 Bit	 00000000 Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 00000007 Para	  Public  'CODE'	
+_DATA  . . . . . . . . . . . . .	32 Bit	 0000028B Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 000001C4 Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -217,6 +765,17 @@ ReadInt  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 ReadKeyFlush . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 ReadKey  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 ReadString . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+ReadVal  . . . . . . . . . . . .	P Near	 0000008C _TEXT	Length= 0000011C Public STDCALL
+  _invalidInput  . . . . . . . .	L Near	 000000B0 _TEXT	
+  _validate  . . . . . . . . . .	L Near	 000000E3 _TEXT	
+  _convert . . . . . . . . . . .	L Near	 000000FF _TEXT	
+  _convertLoop . . . . . . . . .	L Near	 0000010F _TEXT	
+  _updateUserNum . . . . . . . .	L Near	 00000120 _TEXT	
+  _secondToLast  . . . . . . . .	L Near	 00000141 _TEXT	
+  _lastCharacter . . . . . . . .	L Near	 00000151 _TEXT	
+  _convertNegative . . . . . . .	L Near	 0000016F _TEXT	
+  _updateHelpers . . . . . . . .	L Near	 00000177 _TEXT	
+  _end . . . . . . . . . . . . .	L Near	 0000018D _TEXT	
 SetConsoleCursorInfo . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 SetConsoleCursorPosition . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 SetConsoleMode . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -253,8 +812,12 @@ WriteStackFrameName  . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 WriteStackFrame  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteString  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteToFile  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WriteVal . . . . . . . . . . . .	P Near	 000001A8 _TEXT	Length= 00000001 Public STDCALL
 WriteWindowsMsg  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000007 Public STDCALL
+clearUserStr . . . . . . . . . .	P Near	 000001A9 _TEXT	Length= 0000001B Public STDCALL
+  _clearLoop . . . . . . . . . .	L Near	 000001B6 _TEXT	
+main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 0000008C Public STDCALL
+  _getNumberLoop . . . . . . . .	L Near	 00000027 _TEXT	
 printf . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 scanf  . . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
 wsprintfA  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
@@ -346,6 +909,8 @@ KEY_EVENT  . . . . . . . . . . .	Number	 00000001h
 KEY_MASKS  . . . . . . . . . . .	Number	 0000001Fh   
 LEFT_ALT_PRESSED . . . . . . . .	Number	 00000002h   
 LEFT_CTRL_PRESSED  . . . . . . .	Number	 00000008h   
+MAX_STR_SIZE . . . . . . . . . .	Number	 0000000Bh   
+MAX_VALUE  . . . . . . . . . . .	Number	 7FFFFFFFh   
 MB_ABORTRETRYIGNORE  . . . . . .	Number	 00000002h   
 MB_APPLMODAL . . . . . . . . . .	Number	 00000000h   
 MB_CANCELTRYCONTINUE . . . . . .	Number	 00000006h   
@@ -371,12 +936,16 @@ MB_USERICON  . . . . . . . . . .	Number	 00000080h
 MB_YESNOCANCEL . . . . . . . . .	Number	 00000003h   
 MB_YESNO . . . . . . . . . . . .	Number	 00000004h   
 MENU_EVENT . . . . . . . . . . .	Number	 00000008h   
+MINUS_ASCII  . . . . . . . . . .	Number	 0000002Dh   
+MIN_VALUE  . . . . . . . . . . .	Number	 -80000000h   
 MOUSE_EVENT  . . . . . . . . . .	Number	 00000002h   
 MessageBox . . . . . . . . . . .	Text   	 MessageBoxA
+NINE_ASCII . . . . . . . . . . .	Number	 00000039h   
 NULL . . . . . . . . . . . . . .	Number	 00000000h   
 NUMLOCK_ON . . . . . . . . . . .	Number	 00000020h   
 OPEN_ALWAYS  . . . . . . . . . .	Number	 00000004h   
 OPEN_EXISTING  . . . . . . . . .	Number	 00000003h   
+PLUS_ASCII . . . . . . . . . . .	Number	 0000002Bh   
 PeekConsoleInput . . . . . . . .	Text   	 PeekConsoleInputA
 RIGHT_ALT_PRESSED  . . . . . . .	Number	 00000001h   
 RIGHT_CTRL_PRESSED . . . . . . .	Number	 00000004h   
@@ -473,21 +1042,34 @@ VK_UP  . . . . . . . . . . . . .	Number	 00000026h
 WINDOW_BUFFER_SIZE_EVENT . . . .	Number	 00000004h   
 WriteConsoleOutputCharacter  . .	Text   	 WriteConsoleOutputCharacterA
 WriteConsole . . . . . . . . . .	Text   	 WriteConsoleA
+ZERO_ASCII . . . . . . . . . . .	Number	 00000030h   
+avgStr . . . . . . . . . . . . .	Byte	 00000218 _DATA	
 black  . . . . . . . . . . . . .	Number	 00000000h   
 blue . . . . . . . . . . . . . .	Number	 00000001h   
 brown  . . . . . . . . . . . . .	Number	 00000006h   
+byeStr . . . . . . . . . . . . .	Byte	 00000233 _DATA	
 cyan . . . . . . . . . . . . . .	Number	 00000003h   
+errorStr . . . . . . . . . . . .	Byte	 00000179 _DATA	
 exit . . . . . . . . . . . . . .	Text   	 INVOKE ExitProcess,0
 gray . . . . . . . . . . . . . .	Number	 00000008h   
 green  . . . . . . . . . . . . .	Number	 00000002h   
+introStr . . . . . . . . . . . .	Byte	 00000059 _DATA	
 lightBlue  . . . . . . . . . . .	Number	 00000009h   
 lightCyan  . . . . . . . . . . .	Number	 0000000Bh   
 lightGray  . . . . . . . . . . .	Number	 00000007h   
 lightGreen . . . . . . . . . . .	Number	 0000000Ah   
 lightMagenta . . . . . . . . . .	Number	 0000000Dh   
 lightRed . . . . . . . . . . . .	Number	 0000000Ch   
+listStr  . . . . . . . . . . . .	Byte	 000001D4 _DATA	
 magenta  . . . . . . . . . . . .	Number	 00000005h   
+mulHelper  . . . . . . . . . . .	DWord	 0000025B _DATA	
+promptStr  . . . . . . . . . . .	Byte	 00000159 _DATA	
 red  . . . . . . . . . . . . . .	Number	 00000004h   
+sumStr . . . . . . . . . . . . .	Byte	 000001FA _DATA	
+titleStr . . . . . . . . . . . .	Byte	 00000000 _DATA	
+userArray  . . . . . . . . . . .	DWord	 00000263 _DATA	
+userNum  . . . . . . . . . . . .	DWord	 0000025F _DATA	
+userStr  . . . . . . . . . . . .	Byte	 0000024E _DATA	
 white  . . . . . . . . . . . . .	Number	 0000000Fh   
 wsprintf . . . . . . . . . . . .	Text   	 wsprintfA
 yellow . . . . . . . . . . . . .	Number	 0000000Eh   
