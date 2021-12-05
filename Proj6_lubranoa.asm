@@ -104,6 +104,7 @@ mulHelper	SDWORD	1			; Holds a value to help multiply values in ASCII to digit c
 userNum		SDWORD	0			; Helps ReadVal procedure with conversion and holds ReadVal's final number
 userArray	SDWORD	10 DUP(?)	; Will hold numbers converted from user number strings
 sumNum		SDWORD	0			; Helps with keeping track of the sum of the numbers
+revStr		BYTE	13 DUP(0)
 
 .code
 main PROC
@@ -153,8 +154,8 @@ main PROC
 
 		loop	_getNumberLoop
 
-	mDisplayString offset listStr
 	call	CrLf
+	mDisplayString offset listStr
 	
 	mov		ecx, 10
 	_writeLoop:
@@ -168,26 +169,61 @@ main PROC
 		mov		eax, [esi+ebx]
 		add		sumNum, eax
 
-		push	DWORD ptr [esi+ebx]
+		push	SDWORD ptr [esi+ebx]
 		push	offset userStr
-		push	offset mulHelper
+		push	offset revStr
+		push	SDWORD ptr 10
 		call	WriteVal
 
-		mov		edx, offset userStr
-		call	WriteString
 		cmp		ecx, 1
 		jz		_doneLooping
 		mov		al, ','
 		call	WriteChar
 		mov		al, ' '
+		call	WriteChar
+
+		; Clear userStr and revStr for use again later
+		push	offset userStr
+		call	clearStrArray
+		push	offset revStr
+		call	clearStrArray
+		
+		loop	_writeLoop
 
 	_doneLooping:
 		call	CrLf
-
+	
+	; Clear userStr and revStr for use again later
+	push	offset userStr
+	call	clearStrArray
+	push	offset revStr
+	call	clearStrArray
+	
 	mDisplayString offset sumStr
+	push	sumNum
+	push	offset userStr
+	push	offset revStr
+	push	SDWORD ptr 10
+	call	WriteVal
 	call	CrLf
 
+	; Clear userStr and revStr for use again later
+	push	offset userStr
+	call	clearStrArray
+	push	offset revStr
+	call	clearStrArray
+
 	mDisplayString offset avgStr
+	mov		eax, sumNum
+	mov		ebx, 10
+	cdq
+	idiv	ebx	
+	push	eax
+	push	offset userStr
+	push	offset revStr
+	push	SDWORD ptr 10
+	call	WriteVal
+	call	CrLf
 	call	CrLf
 	
 	mDisplayString offset byeStr
@@ -238,7 +274,7 @@ ReadVal PROC
 	; Get a different numeer string after an invalid input
 	_invalidInput:
 		push	DWORD ptr [ebp+20]
-		call	clearUserStr			; Clear userStr helper label to prep for new input
+		call	clearStrArray			; Clear userStr helper label to prep for new input
 		mov		edi, [ebp+12]
 		mov		SDWORD ptr [edi], 0		; Reset the userNum helper label to 0
 		mov		edi, [ebp+8]
@@ -273,9 +309,9 @@ ReadVal PROC
 		; ------------------------------------------------------------------------------
 		mov		esi, [ebp+20]
 		cmp		BYTE ptr [esi], PLUS_ASCII
-		jz		_convert				; If user input has a '+' at index 0, jump to convert
+		jz		_convertNum				; If user input has a '+' at index 0, jump to convert
 		cmp		BYTE ptr [esi], MINUS_ASCII
-		jz		_convert				; If user input has a '-' at index 0, jump to convert
+		jz		_convertNum				; If user input has a '-' at index 0, jump to convert
 		cmp		eax, MAX_STR_SIZE
 		jz		_invalidInput			; If user input has 11 characters but no sign, it's too big so, jump to _invalidInput
 		
@@ -290,7 +326,7 @@ ReadVal PROC
 	;     total.
 	;
 	; ----------------------------------------------------------------------------------
-	_convert:		
+	_convertNum:		
 		
 		mov		ecx, eax				; Initialize ECX to the number of entered characters
 		mov		esi, [ebp+20]			; Initialize ESI to point to address of user input string
@@ -301,7 +337,7 @@ ReadVal PROC
 		
 		
 		; Top of loop
-		_convertLoop:
+		_convertNumLoop:
 			xor		eax, eax					; Clear EAX each iteration
 			cmp		ecx, 1
 			jz		_lastCharacter				; If ECX is 1, current character is leftmost(last) so, jump to _lastCharacter
@@ -341,16 +377,16 @@ ReadVal PROC
 			dec		ecx							; Pre-decrement ECX in case of jump to top of loop
 			dec		esi							; Pre-decrement ESI in case of jump to top of loop
 			cmp		BYTE ptr [esi], ZERO_ASCII
-			jb		_convertLoop
+			jb		_convertNumLoop
 			cmp		BYTE ptr [esi], NINE_ASCII
-			ja		_convertLoop				; If the character is not a digit, loop back to top
+			ja		_convertNumLoop				; If the character is not a digit, loop back to top
 			inc		ecx
 			inc		esi
 			jmp		_updateHelpers				; Otherwise, character = digit so, re-increment ECX and ESI then jump to _updateHelpers
 		
 		_lastCharacter:
 			cmp		BYTE ptr [esi], MINUS_ASCII
-			jz		_convertNegative			; If last character ASCII = minus sign ASCII, jump to _convertNegative
+			jz		_convertNegNum				; If last character ASCII = minus sign ASCII, jump to _convertNegNum
 			cmp		BYTE ptr [esi], PLUS_ASCII
 			jz		_end						; Else, if last character ASCII = plus sign ASCII, jump to _end
 			cmp		BYTE ptr [esi], ZERO_ASCII
@@ -361,7 +397,7 @@ ReadVal PROC
 
 
 		; Convert negative string to negative integer
-		_convertNegative:
+		_convertNegNum:
 			mov		eax, [edi]
 			neg		eax
 			mov		[edi], eax
@@ -385,12 +421,12 @@ ReadVal PROC
 			dec		esi
 			
 			; When ECX is 0, execution moves to next line of code below
-			loop	_convertLoop				
+			loop	_convertNumLoop				
 
 	; Clears the helper string, resets mulHelper to 1
 	_end:
 		push	DWORD ptr [ebp+20]
-		call	clearUserStr
+		call	clearStrArray
 		mov		edi, [ebp+8]
 		mov		SDWORD ptr [edi], 1
 	
@@ -409,43 +445,168 @@ ReadVal ENDP
 ; --------------------------------------------------------------------------------------
 ; Name: WriteVal
 ;
-; Converts a numeric Signed Doubleword data type to a string of ASCII characters.
+; Converts a numeric Signed Doubleword data type to a string of ASCII characters, then
+;	  invokes the mDisplayString macro to display the converted number.
 ;
-; Preconditions: 
-;
-; Postconditions:
-;
-; Receives:
-;
-; Returns: 
-; --------------------------------------------------------------------------------------
-WriteVal PROC
-
-	ret
-WriteVal ENDP
-
-; --------------------------------------------------------------------------------------
-; Name: clearUserStr
-;
-; Clears the userStr helper array for a new entry by changing all the bytes to 0 excpt
-;	  the null terminator.
-;
-; Preconditions: The helper array must be a 13 Byte string array, including the null
-;	  terminator
+; Preconditions: Value to convert and the value 10 both need to be of Type SDWORD. Both
+;	  the user string label and reverse string labels must be string Byte arrays that 
+;	  are 13 Bytes.
 ;
 ; Postconditions: All used registers are preserved and restored.
 ;
 ; Receives:
-;	  [ebp+8]  = address of userStr array
+;	  [ebp+20]  = the value to convert (e.g., -1234)
+;	  [ebp+16]	= address of userStr label
+;	  [ebp+12]	= address of revStr label
+;	  [ebp+8]	= the value 10
 ;
 ; Returns: 
-;	  userStr  = empty 13-Byte array
+;	  userStr   = new number string from converted number (e.g., "-1234")
+;	  revStr	= reversed number string from converted number (e.g., "4321-")
+;
 ; --------------------------------------------------------------------------------------
-clearUserStr PROC
+WriteVal PROC
+
+	; Preserve used registers and assign static stack-fram pointer
+	push	ebp
+	mov		ebp, esp
+	push	eax
+	push	ecx
+	push	edx
+	push	esi
+	push	edi
+
+	mov		eax, [ebp+20]	; Put value to convert into EAX
+	mov		edi, [ebp+12]	; Point EDI to first address of reverse string
+	xor		ecx, ecx
+
+	cmp		eax, 0
+	jz		_inputIsZero	; If the value is already 0, jump to _inputIsZero block for handling, otherwise, continue down
+	
+	; ----------------------------------------------------------------------------------
+	; Conversion is a while loop that ends when the quotient of sequential division by
+	;	  10 is 0. Execution takes the remainder of division by 10 and uses it to find
+	;	  the correct ASCII value to store in reverse in revStr. Then the reversed 
+	;	  string array of ASCII values is reversed into the userStr array to de-reverse
+	;	  the revStr string array, giving us the converted number string from the 
+	;	  original value.
+	;
+	; ----------------------------------------------------------------------------------
+	
+	_convertStrLoop:
+		cmp		eax, 0
+		jz		_revToCorrect			; If quotient in EAX is 0, break to _revToCorrect block
+		cdq								; Sign-extend EAX into EDX, precondition for IDIV
+		idiv	SDWORD ptr [ebp+8]
+		cmp		edx, 0
+		jl		_convertNegStr			; If remainder of division by 10 is negative, jump to _convertNegStr
+										; Otherwise remainder is positive so, continue down
+
+		; Finds remainder's correct ASCII, then jumps to add it to the reverse string
+		push	eax						; Preserve number being converted
+		mov		eax, edx
+		add		eax, ZERO_ASCII			; Add 0's ASCII value to remainder to get its own ASCII value
+		jmp		_addToRevStr
+
+	; Only for negative numbers, check for last character so it can handle adding a negative sign
+	_convertNegStr:		
+		cmp		eax, 0					; If quotient of last division is 0, current negative remainder is last character to add to revStr
+		jz		_addNegativeSign		; so, execution must handle this differently and jumps to _addNegativeSign block
+		
+		; If not the last character to add, add it and jump
+		neg		edx						; Negate remainder to make it positve
+		push	eax						; Preserve number being converted
+		mov		eax, edx
+		add		eax, ZERO_ASCII			; Add 0's ASCII value to remainder to get its own ASCII value
+		jmp		_addToRevStr			; Jump down to _addToRevStr
+
+		; Else, if it is the last character to add, add it, add a minus sign, and continue down
+		_addNegativeSign:
+			neg		edx
+			push	eax						; Preserve number being converted
+			mov		eax, edx
+			add		eax, ZERO_ASCII			; Add 0's ASCII value to remainder to get its own ASCII value
+			cld
+			STOSB							; Store last remainder's ascii
+			inc		ecx						; Increment ECX to account for extra storage instruction
+			mov		eax, MINUS_ASCII
+
+	; ----------------------------------------------------------------------------------
+	; Store the current character's ASCII value in the reverse string array, saving how
+	;	  many total individual storage operations occur in ECX by incrementing on each
+	;	  storage operation. ECX will be used below to reverse the reverse string.
+	;
+	; This process will loop to turn a value, e.g., -1234, and turn it into a string 
+	;	  that looks like "4321-".
+	;
+	; ----------------------------------------------------------------------------------
+	_addToRevStr:
+		cld								; Clear direction flag
+		STOSB							; Store ASCII value in AL into memory address in EDI and increment EDI by 1 Byte
+		pop		eax						; Restore number being converted
+		inc		ecx						
+		jmp		_convertStrLoop			; Loop back up to convert next remainder
+	
+	; Jumping off point for the loop below, initializes registers
+	_revToCorrect:
+		mov		esi, [ebp+12]			; Point ESI to revStr
+		add		esi, ecx
+		dec		esi						; Point ESI to last character in revStr
+		mov		edi, [ebp+16]			; Point EDI to userStr
+
+		_revLoop:
+			std								; Set direction flag so that LODSB decrements ESI
+			LODSB							; Load current address of revStr character in ESI into register AL
+			cld								; Clear direction flag so that STOSB increments EDI
+			STOSB							; Load current value in AL into current address of userStr in EDI
+			loop	_revLoop				; Loop again until ECX is 0
+
+		jmp		_end						; Executes after ECX is found to be 0
+
+	; Store the ASCII value for 0 in the userStr array, then continue down
+	_inputIsZero:
+		mov		edi, [ebp+16]
+		mov		al, ZERO_ASCII
+		STOSB					; No need to clear flag since execution only has to store one ASCII value 
+	
+	; Print final string stored in the userStr string array
+	_end:
+	mDisplayString	DWORD ptr [ebp+16]
+
+	; Restore used registers, de-reference 8 Bytes of parameters, and return control to main
+	pop		edi
+	pop		esi
+	pop		edx
+	pop		ecx
+	pop		eax
+	pop		ebp
+	ret		16
+WriteVal ENDP
+
+; --------------------------------------------------------------------------------------
+; Name: clearStrArray
+;
+; Clears a string helper array for a new entry by changing all the bytes to 0 except
+;	  the null terminator.
+;
+; Preconditions: The helper array must be a 13 Byte string array, including the null
+;	  terminator.
+;
+; Postconditions: All used registers are preserved and restored.
+;
+; Receives:
+;	  [ebp+8]  = address of string helper array
+;
+; Returns: 
+;	  string array  = empty 13-Byte array
+;
+; --------------------------------------------------------------------------------------
+clearStrArray PROC
 	
 	; Preserve used registers and assign static stack-fram pointer
 	push	ebp
 	mov		ebp, esp
+	push	eax
 	push	ecx
 	push	edi
 
@@ -455,16 +616,17 @@ clearUserStr PROC
 	
 	; Set each Byte in the array to 0
 	_clearLoop:
-		mov		BYTE ptr [edi], 0
-		add		edi, 1		; Increment address in EDI by 1 Byte
+		mov		al, 0
+		STOSB				; Store value in AL into memory address of string array in EDI
 		loop	_clearLoop
 
 	; Restore used registers, de-reference 4 Bytes of parameters, and return control to calling procedure
 	pop		edi
 	pop		ecx
+	pop		eax
 	pop		ebp
 	ret		4
 
-clearUserStr ENDP
+clearStrArray ENDP
 
 END main
