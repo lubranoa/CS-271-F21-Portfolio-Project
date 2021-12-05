@@ -1,7 +1,7 @@
 TITLE Program Template     (Proj6_lubranoa.asm)
 
 ; Author:  Alexander Lubrano
-; Last Modified:  12/04/2021
+; Last Modified:  12/05/2021
 ; OSU email address: lubranoa@oregonstate.edu
 ; Course number/section:   CS271 Section 400
 ; Project Number:  6 - String Primitives and Macros        Due Date:  12/05/2021
@@ -253,7 +253,7 @@ main ENDP
 ;	  [ebp+8]   = address of multiplication helper label
 ;
 ; Returns: 
-;	  EAX		= converted number from user string
+;	  userNum	= converted number from user string
 ; --------------------------------------------------------------------------------------
 ReadVal PROC
 	; Preserve used registers and assign static stack-fram pointer
@@ -297,10 +297,10 @@ ReadVal PROC
 	;
 	; ----------------------------------------------------------------------------------
 	_validate:
-		cmp		eax, 0
-		jz		_invalidInput			; If user input nothing, jump up to _invalidInput block
+		cmp		eax, 0					; EAX holds the number of characters entered, excluding null terminator
+		jz		_invalidInput			; If user input no characters, jump up to _invalidInput block
 		cmp		eax, MAX_STR_SIZE
-		ja		_invalidInput			; If user input something too large, jump up to _invalidInput block
+		ja		_invalidInput			; If user input too many characters, jump up to _invalidInput block
 
 		; ------------------------------------------------------------------------------
 		; At this point, if number string has either sign at the 1st index, we can start 
@@ -332,7 +332,7 @@ ReadVal PROC
 		mov		esi, [ebp+20]			; Initialize ESI to point to address of user input string
 		add		esi, ecx
 		dec		esi						; Points ESI at the last value of the user string
-		mov		edi, [ebp+12]			; Initialize EDI to point to the temp user number label's address
+		mov		edi, [ebp+12]			; Initialize EDI to point to the user number label's address
 		mov		ebx, 10					; Initialize EBX to hold the value 10
 		
 		
@@ -350,13 +350,15 @@ ReadVal PROC
 		_updateUserNum:
 			
 			; Get character's actual value (all characters that reach this block are digits 0-9)
-			mov		al, [esi]
+			std									; Set direction flag for LODSB
+			LODSB								; Load ASCII value from address of userStr in ESI into AL and decrement ESI
 			sub		al, ZERO_ASCII				; Subtract ZERO_ASCII value from character's ASCII value to get its numerical value
 			
 			; Multiply this iteration by its power of 10 (first iteration is multiplied by 1)
 			push	esi
 			push	edx
 			mov		esi, [ebp+8]				; Put address of multiplication helper in ESI
+			cdq
 			imul	DWORD ptr [esi]				; Multiply value in EAX by value in multiplication helper
 			jo		_invalidInput				; If the multiplication resulted in an overflow condition, the number is too big
 			pop		edx
@@ -375,13 +377,13 @@ ReadVal PROC
 
 		_secondToLast:
 			dec		ecx							; Pre-decrement ECX in case of jump to top of loop
-			dec		esi							; Pre-decrement ESI in case of jump to top of loop
+			; dec		esi							; Pre-decrement ESI in case of jump to top of loop
 			cmp		BYTE ptr [esi], ZERO_ASCII
 			jb		_convertNumLoop
 			cmp		BYTE ptr [esi], NINE_ASCII
 			ja		_convertNumLoop				; If the character is not a digit, loop back to top
 			inc		ecx
-			inc		esi
+			; inc		esi
 			jmp		_updateHelpers				; Otherwise, character = digit so, re-increment ECX and ESI then jump to _updateHelpers
 		
 		_lastCharacter:
@@ -396,7 +398,7 @@ ReadVal PROC
 			jmp		_updateUserNum				; Else, last character = digit so, jump to _updateUserNum
 
 
-		; Convert negative string to negative integer
+		; Convert positive integer to negative integer
 		_convertNegNum:
 			mov		eax, [edi]
 			neg		eax
@@ -411,19 +413,17 @@ ReadVal PROC
 			push	edx
 			mov		edi, [ebp+8]
 			mov		eax, [edi]					; Put current power of 10 value in EAX, then multiply by 10
+			cdq
 			imul	ebx
 			jo		_invalidInput				; If this results in an overflow condition, the next value will too so, jump to _invalidInput
 			mov		[edi], eax					; Otherwise, store the result in mulHelper
 			pop		edx
 			pop		edi
 			
-			; Decrement address in ESI to point to next character that is 1 Byte below current one in memory
-			dec		esi
-			
 			; When ECX is 0, execution moves to next line of code below
 			loop	_convertNumLoop				
 
-	; Clears the helper string, resets mulHelper to 1
+	; Clears the helper string array, resets mulHelper to 1
 	_end:
 		push	DWORD ptr [ebp+20]
 		call	clearStrArray
@@ -617,6 +617,7 @@ clearStrArray PROC
 	; Set each Byte in the array to 0
 	_clearLoop:
 		mov		al, 0
+		cld
 		STOSB				; Store value in AL into memory address of string array in EDI
 		loop	_clearLoop
 
