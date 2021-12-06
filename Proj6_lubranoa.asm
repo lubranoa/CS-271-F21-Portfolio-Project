@@ -1,12 +1,18 @@
-TITLE Program Template     (Proj6_lubranoa.asm)
+TITLE Designing Low-Level I/O Procedures     (Proj6_lubranoa.asm)
 
 ; Author:  Alexander Lubrano
 ; Last Modified:  12/05/2021
 ; OSU email address: lubranoa@oregonstate.edu
 ; Course number/section:   CS271 Section 400
 ; Project Number:  6 - String Primitives and Macros        Due Date:  12/05/2021
-; Description: This file is provided as a template from which you may work
-;              when developing assembly projects in CS271.
+; Description: This program introduces itself, prints introductory instructions to the
+;	  user, has the user input 10 values, validating that each one meets specifications,
+;	  converts them from input strings to values, and stores them in an array. Then,
+;	  the program converts the values from numbers to strings, displays the entered 
+;	  numbers, calculates and converts the sum from number to string to display it, and
+;	  calculates and converts a truncated average from number to string to display it,
+;	  then displays a goodbye message. All strings are displayed via macros. All user 
+;	  input is captured via macros also.
 
 INCLUDE Irvine32.inc
 
@@ -26,7 +32,7 @@ INCLUDE Irvine32.inc
 ;	  userStrBuffer	  = length of string array
 ;
 ; Returns: 
-;	  userStrLocation = address of new user-entered string
+;	  userStrLocation = address of new user-entered string in temp user string holder
 ;				  EAX = number of characters entered
 ;
 ; --------------------------------------------------------------------------------------
@@ -77,9 +83,8 @@ mDisplayString	 MACRO   strLocation
 
 ENDM
 
-MIN_VALUE	 = 80000000h
-MAX_VALUE	 = 7FFFFFFFh
 MAX_STR_SIZE = 11
+MAX_ARR_SIZE = 13
 PLUS_ASCII	 = 43
 MINUS_ASCII	 = 45
 ZERO_ASCII	 = 48
@@ -99,12 +104,12 @@ sumStr		BYTE	"The sum of these numbers is: ",0
 avgStr		BYTE	"The truncated average is: ",0
 byeStr		BYTE	"Hope this was fun!",13,10,"- Alex",0
 ; Data manipulation helpers
-userStr		BYTE	13 DUP(0)	; Holds entered strings in ReadVal, helps WriteVal with conversion and holds WriteVal's final string array
-mulHelper	SDWORD	1			; Holds a value to help multiply values in ASCII to digit conversion
-userNum		SDWORD	0			; Helps ReadVal procedure with conversion and holds ReadVal's final number
-userArray	SDWORD	10 DUP(?)	; Will hold numbers converted from user number strings
-sumNum		SDWORD	0			; Helps with keeping track of the sum of the numbers
-revStr		BYTE	13 DUP(0)
+userStr		BYTE	MAX_ARR_SIZE DUP(0)	; Holds entered strings in ReadVal, helps WriteVal with conversion and holds WriteVal's final string array
+mulHelper	SDWORD	1					; Holds a value to help multiply values in ASCII to digit conversion
+userNum		SDWORD	0					; Helps ReadVal procedure with conversion and holds ReadVal's final number
+userArray	SDWORD	10 DUP(?)			; Will hold numbers converted from user number strings
+sumNum		SDWORD	0					; Helps with keeping track of the sum of the numbers
+revStr		BYTE	MAX_ARR_SIZE DUP(0)
 
 .code
 main PROC
@@ -155,28 +160,38 @@ main PROC
 		loop	_getNumberLoop
 
 	call	CrLf
-	mDisplayString offset listStr
+	mDisplayString offset listStr	; Display list string
 	
-	mov		ecx, 10
+	mov		ecx, 10					; Initialize ECX for loop below
+
+	; ----------------------------------------------------------------------------------
+	; Loop 10 times to call the WriteVal procedure, converting each value in the user
+	;	  array to a string and printing each to the console, each followed by a comma
+	;	  and space character, except the last value.
+	; 
+	; ----------------------------------------------------------------------------------
 	_writeLoop:
-		mov		esi, offset	userArray		
+		
+		; Get current index of array using (address of array[n]) = (address of array) + (n * (TYPE of array))
+		mov		esi, offset	userArray
 		mov		eax, 10
-		sub		eax, ecx
+		sub		eax, ecx				; Get current index of array (n)
 		mov		ebx, TYPE userArray
-		mul		ebx
+		mul		ebx						; Get current Byte index of array (n * (TYPE of array))
 		mov		ebx, eax
 
-		mov		eax, [esi+ebx]
-		add		sumNum, eax
+		mov		eax, [esi+ebx]			; Get value at current index of array (address of array + (n * (TYPE of array)))
+		add		sumNum, eax				; Add to sumNum value for running sum of values
 
-		push	SDWORD ptr [esi+ebx]
-		push	offset userStr
-		push	offset revStr
-		push	SDWORD ptr 10
+		; Push parameters to stack for WriteVal, then call WriteVal to display the value as a string
+		push	SDWORD ptr [esi+ebx]	; Push value at current address of userArray (input)
+		push	offset userStr			; Push address of userStr helper (input/output)
+		push	offset revStr			; Push address of revStr helper (input/output)
+		push	SDWORD ptr 10			; Push the value 10 (input)
 		call	WriteVal
 
 		cmp		ecx, 1
-		jz		_doneLooping
+		jz		_doneLooping			; If it's the last iteration, skip the ',' and ' ' printing, otherwise, print them
 		mov		al, ','
 		call	WriteChar
 		mov		al, ' '
@@ -188,7 +203,7 @@ main PROC
 		push	offset revStr
 		call	clearStrArray
 		
-		loop	_writeLoop
+		loop	_writeLoop				; Loop back up until ECX = 0
 
 	_doneLooping:
 		call	CrLf
@@ -199,8 +214,10 @@ main PROC
 	push	offset revStr
 	call	clearStrArray
 	
-	mDisplayString offset sumStr
-	push	sumNum
+	mDisplayString offset sumStr	; Display sum string
+	
+	; Push parameters on stack for WriteVal, then call WriteVal to display the value as a string
+	push	sumNum					; Push final sum to stack for WriteVal (input)
 	push	offset userStr
 	push	offset revStr
 	push	SDWORD ptr 10
@@ -213,12 +230,16 @@ main PROC
 	push	offset revStr
 	call	clearStrArray
 
-	mDisplayString offset avgStr
+	mDisplayString offset avgStr	; Dispaly average string
+	
+	; Divide sum by 10 to get the average
 	mov		eax, sumNum
 	mov		ebx, 10
-	cdq
-	idiv	ebx	
-	push	eax
+	cdq								; Sign extend into EDX, precondition for IDIV
+	idiv	ebx						; Divide the sum by 10
+	
+	; Push parameters on stack for WriteVal, then call WriteVal to display the value as a string
+	push	eax						; Push the truncated average (quotient of division) to stack for WriteVal (input)
 	push	offset userStr
 	push	offset revStr
 	push	SDWORD ptr 10
@@ -226,7 +247,7 @@ main PROC
 	call	CrLf
 	call	CrLf
 	
-	mDisplayString offset byeStr
+	mDisplayString offset byeStr	; Display farewell string
 	call	CrLf
 
 	Invoke ExitProcess,0	; exit to operating system
@@ -240,9 +261,11 @@ main ENDP
 ;	  or letters, small enough to fit inside a 32-bit register, and that the user did 
 ;	  not just enter nothing.
 ;
-; Preconditions: 
+; Preconditions: All passed string arrays must be of type BYTE. Number of characters
+;	  must be of type DWORD. User number helper label and multiplication helper must
+;	  be of type SDWORD.
 ;
-; Postconditions:
+; Postconditions: All used registers are preserved and restored
 ;
 ; Receives:
 ;	  [ebp+28]  = address of prompt string array
@@ -254,6 +277,8 @@ main ENDP
 ;
 ; Returns: 
 ;	  userNum	= converted number from user string
+;	  userStr	= always reset to empty
+;	  mulHelper = always reset to 1
 ; --------------------------------------------------------------------------------------
 ReadVal PROC
 	; Preserve used registers and assign static stack-fram pointer
@@ -423,7 +448,7 @@ ReadVal PROC
 			; When ECX is 0, execution moves to next line of code below
 			loop	_convertNumLoop				
 
-	; Clears the helper string array, resets mulHelper to 1
+	; Clears the user string array, resets mulHelper to 1
 	_end:
 		push	DWORD ptr [ebp+20]
 		call	clearStrArray
