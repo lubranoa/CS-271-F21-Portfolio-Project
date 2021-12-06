@@ -2,8 +2,8 @@ TITLE Designing Low-Level I/O Procedures     (Proj6_lubranoa.asm)
 
 ; Author:  Alexander Lubrano
 ; Last Modified:  12/05/2021
-; OSU email address: lubranoa@oregonstate.edu
-; Course number/section:   CS271 Section 400
+; OSU email address:  lubranoa@oregonstate.edu
+; Course number/section:  CS271 Section 400
 ; Project Number:  6 - String Primitives and Macros        Due Date:  12/05/2021
 ; Description: This program introduces itself, prints introductory instructions to the
 ;	  user, has the user input 10 values, validating that each one meets specifications,
@@ -258,8 +258,8 @@ main ENDP
 ;
 ; Invokes the mGetString macro to get a user-entered number, then converts the string of
 ;	  characters to its numerical value, validating along the way that it has no symbols 
-;	  or letters, small enough to fit inside a 32-bit register, and that the user did 
-;	  not just enter nothing.
+;	  or letters, that it is small enough to fit inside a 32-bit register, and that the 
+;	  user did not just enter nothing.
 ;
 ; Preconditions: All passed string arrays must be of type BYTE. Number of characters
 ;	  must be of type DWORD. User number helper label and multiplication helper must
@@ -361,7 +361,7 @@ ReadVal PROC
 		mov		ebx, 10					; Initialize EBX to hold the value 10
 		
 		
-		; Top of loop
+		; Top of string conversion loop
 		_convertNumLoop:
 			xor		eax, eax					; Clear EAX each iteration
 			cmp		ecx, 1
@@ -383,14 +383,13 @@ ReadVal PROC
 			push	esi
 			push	edx
 			mov		esi, [ebp+8]				; Put address of multiplication helper in ESI
-			cdq
 			imul	DWORD ptr [esi]				; Multiply value in EAX by value in multiplication helper
 			jo		_invalidInput				; If the multiplication resulted in an overflow condition, the number is too big
 			pop		edx
 			pop		esi
 
 			; Add the value in EAX to the value in the UserNum label to update running total
-			add		[edi], eax
+			sub		[edi], eax
 			jo		_invalidInput				; If addition resulted in an overflow condition, the number is too big
 			
 			; If this is the last or 2nd to last character, they must be handled differently
@@ -400,33 +399,55 @@ ReadVal PROC
 			ja		_updateHelpers				; Else, if value is not 2nd to last, jump to _updateHelpers
 												; Otherwise, continue down
 
+		; Checks if last character is a digit on second to last iteration
 		_secondToLast:
 			dec		ecx							; Pre-decrement ECX in case of jump to top of loop
-			; dec		esi							; Pre-decrement ESI in case of jump to top of loop
 			cmp		BYTE ptr [esi], ZERO_ASCII
 			jb		_convertNumLoop
 			cmp		BYTE ptr [esi], NINE_ASCII
 			ja		_convertNumLoop				; If the character is not a digit, loop back to top
 			inc		ecx
-			; inc		esi
 			jmp		_updateHelpers				; Otherwise, character = digit so, re-increment ECX and ESI then jump to _updateHelpers
 		
+		; Handles last character differently if it is a positive sign, non-sign, or negative sign
 		_lastCharacter:
-			cmp		BYTE ptr [esi], MINUS_ASCII
-			jz		_convertNegNum				; If last character ASCII = minus sign ASCII, jump to _convertNegNum
 			cmp		BYTE ptr [esi], PLUS_ASCII
-			jz		_end						; Else, if last character ASCII = plus sign ASCII, jump to _end
+			jz		_convertToPosNum			; If last character ASCII = plus sign ASCII, jump to _convertToPosNum
+			cmp		BYTE ptr [esi], MINUS_ASCII
+			jnz		_nonSignLastChar			; Else, if last charaacter ACII != minus sign ASCII, jump to _nonSignLastChar
+			jz		_end						; Otherwise, last character ASCII = minus sign ASCII, jump to _end	
+			
+		; Handles non-sign last characters
+		_nonSignLastChar:
 			cmp		BYTE ptr [esi], ZERO_ASCII
 			jb		_invalidInput
 			cmp		BYTE ptr [esi], NINE_ASCII
-			ja		_invalidInput				; Else, if last character != digit ASCII, the number is invalid so, jump to _invalidInput
-			jmp		_updateUserNum				; Else, last character = digit so, jump to _updateUserNum
+			ja		_invalidInput				; If non-sign last character != digit ASCII, the number is invalid so, jump to _invalidInput
+			
+			; Get final character's actual value
+			std
+			LODSB								; Load ASCII value from address of userStr in ESI into AL and decrement ESI
+			sub		al, ZERO_ASCII				; Subtract ZERO_ASCII value from character's ASCII value to get its numerical value
+			
+			; Multiply by its power of 10
+			push	esi
+			push	edx
+			mov		esi, [ebp+8]				; Put address of multiplication helper in ESI
+			imul	DWORD ptr [esi]				; Multiply value in EAX by value in multiplication helper
+			jo		_invalidInput				; If the multiplication resulted in an overflow condition, the number is too big
+			pop		edx
+			pop		esi
 
+			; Add the value in EAX to the value in the UserNum label to update running total
+			sub		[edi], eax
+			jo		_invalidInput				; If addition resulted in an overflow condition, the number is too big
+												; Otherwise, continue down to conversion to positive number
 
-		; Convert positive integer to negative integer
-		_convertNegNum:
+		; Convert negative integer to positive integer
+		_convertToPosNum:
 			mov		eax, [edi]
 			neg		eax
+			jo		_invalidInput
 			mov		[edi], eax
 			jmp		_end						; If execution reaches this block, it's done converting and can break out of loop
 
@@ -438,7 +459,6 @@ ReadVal PROC
 			push	edx
 			mov		edi, [ebp+8]
 			mov		eax, [edi]					; Put current power of 10 value in EAX, then multiply by 10
-			cdq
 			imul	ebx
 			jo		_invalidInput				; If this results in an overflow condition, the next value will too so, jump to _invalidInput
 			mov		[edi], eax					; Otherwise, store the result in mulHelper
@@ -446,7 +466,8 @@ ReadVal PROC
 			pop		edi
 			
 			; When ECX is 0, execution moves to next line of code below
-			loop	_convertNumLoop				
+			dec		ecx
+			jmp		_convertNumLoop				
 
 	; Clears the user string array, resets mulHelper to 1
 	_end:

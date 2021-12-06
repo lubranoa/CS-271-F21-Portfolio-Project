@@ -1,16 +1,22 @@
-Microsoft (R) Macro Assembler Version 14.29.30137.0	    12/05/21 17:34:46
-)Program Template     (Proj6_lubranoa.asm		     Page 1 - 1
+Microsoft (R) Macro Assembler Version 14.29.30137.0	    12/05/21 19:11:32
+;Designing Low-Level I/O Procedures     (Proj6_lubranoa.asm  Page 1 - 1
 
 
-				TITLE Program Template     (Proj6_lubranoa.asm)
+				TITLE Designing Low-Level I/O Procedures     (Proj6_lubranoa.asm)
 
 				; Author:  Alexander Lubrano
 				; Last Modified:  12/05/2021
-				; OSU email address: lubranoa@oregonstate.edu
-				; Course number/section:   CS271 Section 400
+				; OSU email address:  lubranoa@oregonstate.edu
+				; Course number/section:  CS271 Section 400
 				; Project Number:  6 - String Primitives and Macros        Due Date:  12/05/2021
-				; Description: This file is provided as a template from which you may work
-				;              when developing assembly projects in CS271.
+				; Description: This program introduces itself, prints introductory instructions to the
+				;	  user, has the user input 10 values, validating that each one meets specifications,
+				;	  converts them from input strings to values, and stores them in an array. Then,
+				;	  the program converts the values from numbers to strings, displays the entered 
+				;	  numbers, calculates and converts the sum from number to string to display it, and
+				;	  calculates and converts a truncated average from number to string to display it,
+				;	  then displays a goodbye message. All strings are displayed via macros. All user 
+				;	  input is captured via macros also.
 
 				INCLUDE Irvine32.inc
 			      C ; Include file for Irvine32.lib             (Irvine32.inc)
@@ -47,7 +53,7 @@ Microsoft (R) Macro Assembler Version 14.29.30137.0	    12/05/21 17:34:46
 				;	  userStrBuffer	  = length of string array
 				;
 				; Returns: 
-				;	  userStrLocation = address of new user-entered string
+				;	  userStrLocation = address of new user-entered string in temp user string holder
 				;				  EAX = number of characters entered
 				;
 				; --------------------------------------------------------------------------------------
@@ -98,9 +104,8 @@ Microsoft (R) Macro Assembler Version 14.29.30137.0	    12/05/21 17:34:46
 
 				ENDM
 
- = 80000000			MIN_VALUE	 = 80000000h
- = 7FFFFFFF			MAX_VALUE	 = 7FFFFFFFh
  = 0000000B			MAX_STR_SIZE = 11
+ = 0000000D			MAX_ARR_SIZE = 13
  = 0000002B			PLUS_ASCII	 = 43
  = 0000002D			MINUS_ASCII	 = 45
  = 00000030			ZERO_ASCII	 = 48
@@ -234,16 +239,16 @@ Microsoft (R) Macro Assembler Version 14.29.30137.0	    12/05/21 17:34:46
 	   2D 20 41 6C 65
 	   78 00
 				; Data manipulation helpers
- 0000024E  0000000D [		userStr		BYTE	13 DUP(0)	; Holds entered strings in ReadVal, helps WriteVal with conversion and holds WriteVal's final string array
+ 0000024E  0000000D [		userStr		BYTE	MAX_ARR_SIZE DUP(0)	; Holds entered strings in ReadVal, helps WriteVal with conversion and holds WriteVal's final string array
 	    00
 	   ]
- 0000025B 00000001		mulHelper	SDWORD	1			; Holds a value to help multiply values in ASCII to digit conversion
- 0000025F 00000000		userNum		SDWORD	0			; Helps ReadVal procedure with conversion and holds ReadVal's final number
- 00000263  0000000A [		userArray	SDWORD	10 DUP(?)	; Will hold numbers converted from user number strings
+ 0000025B 00000001		mulHelper	SDWORD	1					; Holds a value to help multiply values in ASCII to digit conversion
+ 0000025F 00000000		userNum		SDWORD	0					; Helps ReadVal procedure with conversion and holds ReadVal's final number
+ 00000263  0000000A [		userArray	SDWORD	10 DUP(?)			; Will hold numbers converted from user number strings
 	    00000000
 	   ]
- 0000028B 00000000		sumNum		SDWORD	0			; Helps with keeping track of the sum of the numbers
- 0000028F  0000000D [		revStr		BYTE	13 DUP(0)
+ 0000028B 00000000		sumNum		SDWORD	0					; Helps with keeping track of the sum of the numbers
+ 0000028F  0000000D [		revStr		BYTE	MAX_ARR_SIZE DUP(0)
 	    00
 	   ]
 
@@ -304,32 +309,42 @@ Microsoft (R) Macro Assembler Version 14.29.30137.0	    12/05/21 17:34:46
  00000072  E2 B3				loop	_getNumberLoop
 
  00000074  E8 00000000 E		call	CrLf
-					mDisplayString offset listStr
+					mDisplayString offset listStr	; Display list string
  00000079  52		     1		push	edx
  0000007A  BA 000001D4 R     1		mov		edx, offset listStr	; strLocation placeholder is replaced by a memory offest
  0000007F  E8 00000000 E     1		call	WriteString
  00000084  5A		     1		pop		edx
 					
- 00000085  B9 0000000A			mov		ecx, 10
+ 00000085  B9 0000000A			mov		ecx, 10					; Initialize ECX for loop below
+
+					; ----------------------------------------------------------------------------------
+					; Loop 10 times to call the WriteVal procedure, converting each value in the user
+					;	  array to a string and printing each to the console, each followed by a comma
+					;	  and space character, except the last value.
+					; 
+					; ----------------------------------------------------------------------------------
  0000008A				_writeLoop:
- 0000008A  BE 00000263 R			mov		esi, offset	userArray		
+						
+						; Get current index of array using (address of array[n]) = (address of array) + (n * (TYPE of array))
+ 0000008A  BE 00000263 R			mov		esi, offset	userArray
  0000008F  B8 0000000A				mov		eax, 10
- 00000094  2B C1				sub		eax, ecx
+ 00000094  2B C1				sub		eax, ecx				; Get current index of array (n)
  00000096  BB 00000004				mov		ebx, TYPE userArray
- 0000009B  F7 E3				mul		ebx
+ 0000009B  F7 E3				mul		ebx						; Get current Byte index of array (n * (TYPE of array))
  0000009D  8B D8				mov		ebx, eax
 
- 0000009F  8B 04 1E				mov		eax, [esi+ebx]
- 000000A2  01 05 0000028B R			add		sumNum, eax
+ 0000009F  8B 04 1E				mov		eax, [esi+ebx]			; Get value at current index of array (address of array + (n * (TYPE of array)))
+ 000000A2  01 05 0000028B R			add		sumNum, eax				; Add to sumNum value for running sum of values
 
- 000000A8  FF 34 1E				push	SDWORD ptr [esi+ebx]
- 000000AB  68 0000024E R			push	offset userStr
- 000000B0  68 0000028F R			push	offset revStr
- 000000B5  68 0000000A				push	SDWORD ptr 10
- 000000BA  E8 000001EC				call	WriteVal
+						; Push parameters to stack for WriteVal, then call WriteVal to display the value as a string
+ 000000A8  FF 34 1E				push	SDWORD ptr [esi+ebx]	; Push value at current address of userArray (input)
+ 000000AB  68 0000024E R			push	offset userStr			; Push address of userStr helper (input/output)
+ 000000B0  68 0000028F R			push	offset revStr			; Push address of revStr helper (input/output)
+ 000000B5  68 0000000A				push	SDWORD ptr 10			; Push the value 10 (input)
+ 000000BA  E8 0000020F				call	WriteVal
 
  000000BF  83 F9 01				cmp		ecx, 1
- 000000C2  74 24				jz		_doneLooping
+ 000000C2  74 24				jz		_doneLooping			; If it's the last iteration, skip the ',' and ' ' printing, otherwise, print them
  000000C4  B0 2C				mov		al, ','
  000000C6  E8 00000000 E			call	WriteChar
  000000CB  B0 20				mov		al, ' '
@@ -337,57 +352,63 @@ Microsoft (R) Macro Assembler Version 14.29.30137.0	    12/05/21 17:34:46
 
 						; Clear userStr and revStr for use again later
  000000D2  68 0000024E R			push	offset userStr
- 000000D7  E8 00000249				call	clearStrArray
+ 000000D7  E8 0000026C				call	clearStrArray
  000000DC  68 0000028F R			push	offset revStr
- 000000E1  E8 0000023F				call	clearStrArray
+ 000000E1  E8 00000262				call	clearStrArray
 						
- 000000E6  E2 A2				loop	_writeLoop
+ 000000E6  E2 A2				loop	_writeLoop				; Loop back up until ECX = 0
 
  000000E8				_doneLooping:
  000000E8  E8 00000000 E			call	CrLf
 					
 					; Clear userStr and revStr for use again later
  000000ED  68 0000024E R		push	offset userStr
- 000000F2  E8 0000022E			call	clearStrArray
+ 000000F2  E8 00000251			call	clearStrArray
  000000F7  68 0000028F R		push	offset revStr
- 000000FC  E8 00000224			call	clearStrArray
+ 000000FC  E8 00000247			call	clearStrArray
 					
-					mDisplayString offset sumStr
+					mDisplayString offset sumStr	; Display sum string
  00000101  52		     1		push	edx
  00000102  BA 000001FA R     1		mov		edx, offset sumStr	; strLocation placeholder is replaced by a memory offest
  00000107  E8 00000000 E     1		call	WriteString
  0000010C  5A		     1		pop		edx
- 0000010D  FF 35 0000028B R		push	sumNum
+					
+					; Push parameters on stack for WriteVal, then call WriteVal to display the value as a string
+ 0000010D  FF 35 0000028B R		push	sumNum					; Push final sum to stack for WriteVal (input)
  00000113  68 0000024E R		push	offset userStr
  00000118  68 0000028F R		push	offset revStr
  0000011D  68 0000000A			push	SDWORD ptr 10
- 00000122  E8 00000184			call	WriteVal
+ 00000122  E8 000001A7			call	WriteVal
  00000127  E8 00000000 E		call	CrLf
 
 					; Clear userStr and revStr for use again later
  0000012C  68 0000024E R		push	offset userStr
- 00000131  E8 000001EF			call	clearStrArray
+ 00000131  E8 00000212			call	clearStrArray
  00000136  68 0000028F R		push	offset revStr
- 0000013B  E8 000001E5			call	clearStrArray
+ 0000013B  E8 00000208			call	clearStrArray
 
-					mDisplayString offset avgStr
+					mDisplayString offset avgStr	; Dispaly average string
  00000140  52		     1		push	edx
  00000141  BA 00000218 R     1		mov		edx, offset avgStr	; strLocation placeholder is replaced by a memory offest
  00000146  E8 00000000 E     1		call	WriteString
  0000014B  5A		     1		pop		edx
+					
+					; Divide sum by 10 to get the average
  0000014C  A1 0000028B R		mov		eax, sumNum
  00000151  BB 0000000A			mov		ebx, 10
- 00000156  99				cdq
- 00000157  F7 FB			idiv	ebx	
- 00000159  50				push	eax
+ 00000156  99				cdq								; Sign extend into EDX, precondition for IDIV
+ 00000157  F7 FB			idiv	ebx						; Divide the sum by 10
+					
+					; Push parameters on stack for WriteVal, then call WriteVal to display the value as a string
+ 00000159  50				push	eax						; Push the truncated average (quotient of division) to stack for WriteVal (input)
  0000015A  68 0000024E R		push	offset userStr
  0000015F  68 0000028F R		push	offset revStr
  00000164  68 0000000A			push	SDWORD ptr 10
- 00000169  E8 0000013D			call	WriteVal
+ 00000169  E8 00000160			call	WriteVal
  0000016E  E8 00000000 E		call	CrLf
  00000173  E8 00000000 E		call	CrLf
 					
-					mDisplayString offset byeStr
+					mDisplayString offset byeStr	; Display farewell string
  00000178  52		     1		push	edx
  00000179  BA 00000233 R     1		mov		edx, offset byeStr	; strLocation placeholder is replaced by a memory offest
  0000017E  E8 00000000 E     1		call	WriteString
@@ -404,12 +425,14 @@ Microsoft (R) Macro Assembler Version 14.29.30137.0	    12/05/21 17:34:46
 				;
 				; Invokes the mGetString macro to get a user-entered number, then converts the string of
 				;	  characters to its numerical value, validating along the way that it has no symbols 
-				;	  or letters, small enough to fit inside a 32-bit register, and that the user did 
-				;	  not just enter nothing.
+				;	  or letters, that it is small enough to fit inside a 32-bit register, and that the 
+				;	  user did not just enter nothing.
 				;
-				; Preconditions: 
+				; Preconditions: All passed string arrays must be of type BYTE. Number of characters
+				;	  must be of type DWORD. User number helper label and multiplication helper must
+				;	  be of type SDWORD.
 				;
-				; Postconditions:
+				; Postconditions: All used registers are preserved and restored
 				;
 				; Receives:
 				;	  [ebp+28]  = address of prompt string array
@@ -421,6 +444,8 @@ Microsoft (R) Macro Assembler Version 14.29.30137.0	    12/05/21 17:34:46
 				;
 				; Returns: 
 				;	  userNum	= converted number from user string
+				;	  userStr	= always reset to empty
+				;	  mulHelper = always reset to 1
 				; --------------------------------------------------------------------------------------
  00000190			ReadVal PROC
 					; Preserve used registers and assign static stack-fram pointer
@@ -452,7 +477,7 @@ Microsoft (R) Macro Assembler Version 14.29.30137.0	    12/05/21 17:34:46
 					; Get a different numeer string after an invalid input
  000001B4				_invalidInput:
  000001B4  FF 75 14				push	DWORD ptr [ebp+20]
- 000001B7  E8 00000169				call	clearStrArray			; Clear userStr helper label to prep for new input
+ 000001B7  E8 0000018C				call	clearStrArray			; Clear userStr helper label to prep for new input
  000001BC  8B 7D 0C				mov		edi, [ebp+12]
  000001BF  C7 07 00000000			mov		SDWORD ptr [edi], 0		; Reset the userNum helper label to 0
  000001C5  8B 7D 08				mov		edi, [ebp+8]
@@ -529,7 +554,7 @@ Microsoft (R) Macro Assembler Version 14.29.30137.0	    12/05/21 17:34:46
  00000213					_convertNumLoop:
  00000213  33 C0					xor		eax, eax					; Clear EAX each iteration
  00000215  83 F9 01					cmp		ecx, 1
- 00000218  74 3A					jz		_lastCharacter				; If ECX is 1, current character is leftmost(last) so, jump to _lastCharacter
+ 00000218  74 39					jz		_lastCharacter				; If ECX is 1, current character is leftmost(last) so, jump to _lastCharacter
  0000021A  80 3E 30					cmp		BYTE ptr [esi], ZERO_ASCII
  0000021D  72 95					jb		_invalidInput
  0000021F  80 3E 39					cmp		BYTE ptr [esi], NINE_ASCII
@@ -547,89 +572,108 @@ Microsoft (R) Macro Assembler Version 14.29.30137.0	    12/05/21 17:34:46
  00000228  56						push	esi
  00000229  52						push	edx
  0000022A  8B 75 08					mov		esi, [ebp+8]				; Put address of multiplication helper in ESI
- 0000022D  99						cdq
- 0000022E  F7 2E					imul	DWORD ptr [esi]				; Multiply value in EAX by value in multiplication helper
- 00000230  70 82					jo		_invalidInput				; If the multiplication resulted in an overflow condition, the number is too big
- 00000232  5A						pop		edx
- 00000233  5E						pop		esi
+ 0000022D  F7 2E					imul	DWORD ptr [esi]				; Multiply value in EAX by value in multiplication helper
+ 0000022F  70 83					jo		_invalidInput				; If the multiplication resulted in an overflow condition, the number is too big
+ 00000231  5A						pop		edx
+ 00000232  5E						pop		esi
 
 							; Add the value in EAX to the value in the UserNum label to update running total
- 00000234  01 07					add		[edi], eax
- 00000236  0F 80 FFFFFF78				jo		_invalidInput				; If addition resulted in an overflow condition, the number is too big
+ 00000233  29 07					sub		[edi], eax
+ 00000235  0F 80 FFFFFF79				jo		_invalidInput				; If addition resulted in an overflow condition, the number is too big
 							
 							; If this is the last or 2nd to last character, they must be handled differently
- 0000023C  83 F9 01					cmp		ecx, 1
- 0000023F  74 4F					jz		_end						; If this is the last digit, don't need to update mulHelper so, jump to _end
- 00000241  83 F9 02					cmp		ecx, 2
- 00000244  77 34					ja		_updateHelpers				; Else, if value is not 2nd to last, jump to _updateHelpers
+ 0000023B  83 F9 01					cmp		ecx, 1
+ 0000023E  74 73					jz		_end						; If this is the last digit, don't need to update mulHelper so, jump to _end
+ 00000240  83 F9 02					cmp		ecx, 2
+ 00000243  77 55					ja		_updateHelpers				; Else, if value is not 2nd to last, jump to _updateHelpers
 																; Otherwise, continue down
 
- 00000246					_secondToLast:
- 00000246  49						dec		ecx							; Pre-decrement ECX in case of jump to top of loop
-							; dec		esi							; Pre-decrement ESI in case of jump to top of loop
- 00000247  80 3E 30					cmp		BYTE ptr [esi], ZERO_ASCII
- 0000024A  72 C7					jb		_convertNumLoop
- 0000024C  80 3E 39					cmp		BYTE ptr [esi], NINE_ASCII
- 0000024F  77 C2					ja		_convertNumLoop				; If the character is not a digit, loop back to top
- 00000251  41						inc		ecx
-							; inc		esi
- 00000252  EB 26					jmp		_updateHelpers				; Otherwise, character = digit so, re-increment ECX and ESI then jump to _updateHelpers
+ 00000245					_secondToLast:
+ 00000245  49						dec		ecx							; Pre-decrement ECX in case of jump to top of loop
+ 00000246  80 3E 30					cmp		BYTE ptr [esi], ZERO_ASCII
+ 00000249  72 C8					jb		_convertNumLoop
+ 0000024B  80 3E 39					cmp		BYTE ptr [esi], NINE_ASCII
+ 0000024E  77 C3					ja		_convertNumLoop				; If the character is not a digit, loop back to top
+ 00000250  41						inc		ecx
+ 00000251  EB 47					jmp		_updateHelpers				; Otherwise, character = digit so, re-increment ECX and ESI then jump to _updateHelpers
 						
- 00000254					_lastCharacter:
- 00000254  80 3E 2D					cmp		BYTE ptr [esi], MINUS_ASCII
- 00000257  74 19					jz		_convertNegNum				; If last character ASCII = minus sign ASCII, jump to _convertNegNum
- 00000259  80 3E 2B					cmp		BYTE ptr [esi], PLUS_ASCII
- 0000025C  74 32					jz		_end						; Else, if last character ASCII = plus sign ASCII, jump to _end
- 0000025E  80 3E 30					cmp		BYTE ptr [esi], ZERO_ASCII
- 00000261  0F 82 FFFFFF4D				jb		_invalidInput
- 00000267  80 3E 39					cmp		BYTE ptr [esi], NINE_ASCII
- 0000026A  0F 87 FFFFFF44				ja		_invalidInput				; Else, if last character != digit ASCII, the number is invalid so, jump to _invalidInput
- 00000270  EB B2					jmp		_updateUserNum				; Else, last character = digit so, jump to _updateUserNum
+ 00000253					_lastCharacter:
+
+ 00000253  80 3E 2B					cmp		BYTE ptr [esi], PLUS_ASCII
+ 00000256  74 34					jz		_convertToPosNum			; Else, if last character ASCII = plus sign ASCII, jump to _end
+ 00000258  80 3E 2D					cmp		BYTE ptr [esi], MINUS_ASCII
+ 0000025B  75 02					jnz		_nonSignLastChar
+ 0000025D  74 54					jz		_end						; If last character ASCII = minus sign ASCII, jump to _convertNegNum			
+							
+ 0000025F					_nonSignLastChar:
+ 0000025F  80 3E 30					cmp		BYTE ptr [esi], ZERO_ASCII
+ 00000262  0F 82 FFFFFF4C				jb		_invalidInput
+ 00000268  80 3E 39					cmp		BYTE ptr [esi], NINE_ASCII
+ 0000026B  0F 87 FFFFFF43				ja		_invalidInput				; Else, if last character != digit ASCII, the number is invalid so, jump to _invalidInput
+							
+							; Get character's actual value (all characters that reach this block are digits 0-9)
+ 00000271  FD						std									; Set direction flag for LODSB
+ 00000272  AC						LODSB								; Load ASCII value from address of userStr in ESI into AL and decrement ESI
+ 00000273  2C 30					sub		al, ZERO_ASCII				; Subtract ZERO_ASCII value from character's ASCII value to get its numerical value
+							
+							; Multiply this iteration by its power of 10 (first iteration is multiplied by 1)
+ 00000275  56						push	esi
+ 00000276  52						push	edx
+ 00000277  8B 75 08					mov		esi, [ebp+8]				; Put address of multiplication helper in ESI
+ 0000027A  F7 2E					imul	DWORD ptr [esi]				; Multiply value in EAX by value in multiplication helper
+ 0000027C  0F 80 FFFFFF32				jo		_invalidInput				; If the multiplication resulted in an overflow condition, the number is too big
+ 00000282  5A						pop		edx
+ 00000283  5E						pop		esi
+
+							; Add the value in EAX to the value in the UserNum label to update running total
+ 00000284  29 07					sub		[edi], eax
+ 00000286  0F 80 FFFFFF28				jo		_invalidInput				; If addition resulted in an overflow condition, the number is too big
 
 
-						; Convert positive integer to negative integer
- 00000272					_convertNegNum:
- 00000272  8B 07					mov		eax, [edi]
- 00000274  F7 D8					neg		eax
- 00000276  89 07					mov		[edi], eax
- 00000278  EB 16					jmp		_end						; If execution reaches this block, it's done converting and can break out of loop
+						; Convert negative integer to positive integer
+ 0000028C					_convertToPosNum:
+ 0000028C  8B 07					mov		eax, [edi]
+ 0000028E  F7 D8					neg		eax
+ 00000290  0F 80 FFFFFF1E				jo		_invalidInput
+ 00000296  89 07					mov		[edi], eax
+ 00000298  EB 19					jmp		_end						; If execution reaches this block, it's done converting and can break out of loop
 
 						; Updates mulitplication helper and ESI for next iteration, only when not on last and sometimes 2nd to last iterations
- 0000027A					_updateHelpers:
+ 0000029A					_updateHelpers:
 							
 							; Multiplies the value in the mulHelper label by 10 to get the next power of 10
- 0000027A  57						push	edi
- 0000027B  52						push	edx
- 0000027C  8B 7D 08					mov		edi, [ebp+8]
- 0000027F  8B 07					mov		eax, [edi]					; Put current power of 10 value in EAX, then multiply by 10
- 00000281  99						cdq
- 00000282  F7 EB					imul	ebx
- 00000284  0F 80 FFFFFF2A				jo		_invalidInput				; If this results in an overflow condition, the next value will too so, jump to _invalidInput
- 0000028A  89 07					mov		[edi], eax					; Otherwise, store the result in mulHelper
- 0000028C  5A						pop		edx
- 0000028D  5F						pop		edi
+ 0000029A  57						push	edi
+ 0000029B  52						push	edx
+ 0000029C  8B 7D 08					mov		edi, [ebp+8]
+ 0000029F  8B 07					mov		eax, [edi]					; Put current power of 10 value in EAX, then multiply by 10
+ 000002A1  F7 EB					imul	ebx
+ 000002A3  0F 80 FFFFFF0B				jo		_invalidInput				; If this results in an overflow condition, the next value will too so, jump to _invalidInput
+ 000002A9  89 07					mov		[edi], eax					; Otherwise, store the result in mulHelper
+ 000002AB  5A						pop		edx
+ 000002AC  5F						pop		edi
 							
 							; When ECX is 0, execution moves to next line of code below
- 0000028E  E2 83					loop	_convertNumLoop				
+ 000002AD  49						dec		ecx
+ 000002AE  E9 FFFFFF60					jmp		_convertNumLoop				
 
-					; Clears the helper string array, resets mulHelper to 1
- 00000290				_end:
- 00000290  FF 75 14				push	DWORD ptr [ebp+20]
- 00000293  E8 0000008D				call	clearStrArray
- 00000298  8B 7D 08				mov		edi, [ebp+8]
- 0000029B  C7 07 00000001			mov		SDWORD ptr [edi], 1
+					; Clears the user string array, resets mulHelper to 1
+ 000002B3				_end:
+ 000002B3  FF 75 14				push	DWORD ptr [ebp+20]
+ 000002B6  E8 0000008D				call	clearStrArray
+ 000002BB  8B 7D 08				mov		edi, [ebp+8]
+ 000002BE  C7 07 00000001			mov		SDWORD ptr [edi], 1
 					
 					; Restore used registers, de-reference 24 Bytes of parameters, and return control to main
- 000002A1  5F				pop		edi
- 000002A2  5E				pop		esi
- 000002A3  5A				pop		edx
- 000002A4  59				pop		ecx
- 000002A5  5B				pop		ebx
- 000002A6  58				pop		eax
- 000002A7  5D				pop		ebp
- 000002A8  C2 0018			ret		24
+ 000002C4  5F				pop		edi
+ 000002C5  5E				pop		esi
+ 000002C6  5A				pop		edx
+ 000002C7  59				pop		ecx
+ 000002C8  5B				pop		ebx
+ 000002C9  58				pop		eax
+ 000002CA  5D				pop		ebp
+ 000002CB  C2 0018			ret		24
 
- 000002AB			ReadVal ENDP
+ 000002CE			ReadVal ENDP
 
 				; --------------------------------------------------------------------------------------
 				; Name: WriteVal
@@ -654,23 +698,23 @@ Microsoft (R) Macro Assembler Version 14.29.30137.0	    12/05/21 17:34:46
 				;	  revStr	= reversed number string from converted number (e.g., "4321-")
 				;
 				; --------------------------------------------------------------------------------------
- 000002AB			WriteVal PROC
+ 000002CE			WriteVal PROC
 
 					; Preserve used registers and assign static stack-fram pointer
- 000002AB  55				push	ebp
- 000002AC  8B EC			mov		ebp, esp
- 000002AE  50				push	eax
- 000002AF  51				push	ecx
- 000002B0  52				push	edx
- 000002B1  56				push	esi
- 000002B2  57				push	edi
+ 000002CE  55				push	ebp
+ 000002CF  8B EC			mov		ebp, esp
+ 000002D1  50				push	eax
+ 000002D2  51				push	ecx
+ 000002D3  52				push	edx
+ 000002D4  56				push	esi
+ 000002D5  57				push	edi
 
- 000002B3  8B 45 14			mov		eax, [ebp+20]	; Put value to convert into EAX
- 000002B6  8B 7D 0C			mov		edi, [ebp+12]	; Point EDI to first address of reverse string
- 000002B9  33 C9			xor		ecx, ecx
+ 000002D6  8B 45 14			mov		eax, [ebp+20]	; Put value to convert into EAX
+ 000002D9  8B 7D 0C			mov		edi, [ebp+12]	; Point EDI to first address of reverse string
+ 000002DC  33 C9			xor		ecx, ecx
 
- 000002BB  83 F8 00			cmp		eax, 0
- 000002BE  74 4C			jz		_inputIsZero	; If the value is already 0, jump to _inputIsZero block for handling, otherwise, continue down
+ 000002DE  83 F8 00			cmp		eax, 0
+ 000002E1  74 4C			jz		_inputIsZero	; If the value is already 0, jump to _inputIsZero block for handling, otherwise, continue down
 					
 					; ----------------------------------------------------------------------------------
 					; Conversion is a while loop that ends when the quotient of sequential division by
@@ -682,43 +726,43 @@ Microsoft (R) Macro Assembler Version 14.29.30137.0	    12/05/21 17:34:46
 					;
 					; ----------------------------------------------------------------------------------
 					
- 000002C0				_convertStrLoop:
- 000002C0  83 F8 00				cmp		eax, 0
- 000002C3  74 36				jz		_revToCorrect			; If quotient in EAX is 0, break to _revToCorrect block
- 000002C5  99					cdq								; Sign-extend EAX into EDX, precondition for IDIV
- 000002C6  F7 7D 08				idiv	SDWORD ptr [ebp+8]
- 000002C9  83 FA 00				cmp		edx, 0
- 000002CC  7C 08				jl		_convertNegStr			; If remainder of division by 10 is negative, jump to _convertNegStr
+ 000002E3				_convertStrLoop:
+ 000002E3  83 F8 00				cmp		eax, 0
+ 000002E6  74 36				jz		_revToCorrect			; If quotient in EAX is 0, break to _revToCorrect block
+ 000002E8  99					cdq								; Sign-extend EAX into EDX, precondition for IDIV
+ 000002E9  F7 7D 08				idiv	SDWORD ptr [ebp+8]
+ 000002EC  83 FA 00				cmp		edx, 0
+ 000002EF  7C 08				jl		_convertNegStr			; If remainder of division by 10 is negative, jump to _convertNegStr
 														; Otherwise remainder is positive so, continue down
 
 						; Finds remainder's correct ASCII, then jumps to add it to the reverse string
- 000002CE  50					push	eax						; Preserve number being converted
- 000002CF  8B C2				mov		eax, edx
- 000002D1  83 C0 30				add		eax, ZERO_ASCII			; Add 0's ASCII value to remainder to get its own ASCII value
- 000002D4  EB 1F				jmp		_addToRevStr
+ 000002F1  50					push	eax						; Preserve number being converted
+ 000002F2  8B C2				mov		eax, edx
+ 000002F4  83 C0 30				add		eax, ZERO_ASCII			; Add 0's ASCII value to remainder to get its own ASCII value
+ 000002F7  EB 1F				jmp		_addToRevStr
 
 					; Only for negative numbers, check for last character so it can handle adding a negative sign
- 000002D6				_convertNegStr:		
- 000002D6  83 F8 00				cmp		eax, 0					; If quotient of last division is 0, current negative remainder is last character to add to revStr
- 000002D9  74 0A				jz		_addNegativeSign		; so, execution must handle this differently and jumps to _addNegativeSign block
+ 000002F9				_convertNegStr:		
+ 000002F9  83 F8 00				cmp		eax, 0					; If quotient of last division is 0, current negative remainder is last character to add to revStr
+ 000002FC  74 0A				jz		_addNegativeSign		; so, execution must handle this differently and jumps to _addNegativeSign block
 						
 						; If not the last character to add, add it and jump
- 000002DB  F7 DA				neg		edx						; Negate remainder to make it positve
- 000002DD  50					push	eax						; Preserve number being converted
- 000002DE  8B C2				mov		eax, edx
- 000002E0  83 C0 30				add		eax, ZERO_ASCII			; Add 0's ASCII value to remainder to get its own ASCII value
- 000002E3  EB 10				jmp		_addToRevStr			; Jump down to _addToRevStr
+ 000002FE  F7 DA				neg		edx						; Negate remainder to make it positve
+ 00000300  50					push	eax						; Preserve number being converted
+ 00000301  8B C2				mov		eax, edx
+ 00000303  83 C0 30				add		eax, ZERO_ASCII			; Add 0's ASCII value to remainder to get its own ASCII value
+ 00000306  EB 10				jmp		_addToRevStr			; Jump down to _addToRevStr
 
 						; Else, if it is the last character to add, add it, add a minus sign, and continue down
- 000002E5					_addNegativeSign:
- 000002E5  F7 DA					neg		edx
- 000002E7  50						push	eax						; Preserve number being converted
- 000002E8  8B C2					mov		eax, edx
- 000002EA  83 C0 30					add		eax, ZERO_ASCII			; Add 0's ASCII value to remainder to get its own ASCII value
- 000002ED  FC						cld
- 000002EE  AA						STOSB							; Store last remainder's ascii
- 000002EF  41						inc		ecx						; Increment ECX to account for extra storage instruction
- 000002F0  B8 0000002D					mov		eax, MINUS_ASCII
+ 00000308					_addNegativeSign:
+ 00000308  F7 DA					neg		edx
+ 0000030A  50						push	eax						; Preserve number being converted
+ 0000030B  8B C2					mov		eax, edx
+ 0000030D  83 C0 30					add		eax, ZERO_ASCII			; Add 0's ASCII value to remainder to get its own ASCII value
+ 00000310  FC						cld
+ 00000311  AA						STOSB							; Store last remainder's ascii
+ 00000312  41						inc		ecx						; Increment ECX to account for extra storage instruction
+ 00000313  B8 0000002D					mov		eax, MINUS_ASCII
 
 					; ----------------------------------------------------------------------------------
 					; Store the current character's ASCII value in the reverse string array, saving how
@@ -729,52 +773,52 @@ Microsoft (R) Macro Assembler Version 14.29.30137.0	    12/05/21 17:34:46
 					;	  that looks like "4321-".
 					;
 					; ----------------------------------------------------------------------------------
- 000002F5				_addToRevStr:
- 000002F5  FC					cld								; Clear direction flag
- 000002F6  AA					STOSB							; Store ASCII value in AL into memory address in EDI and increment EDI by 1 Byte
- 000002F7  58					pop		eax						; Restore number being converted
- 000002F8  41					inc		ecx						
- 000002F9  EB C5				jmp		_convertStrLoop			; Loop back up to convert next remainder
+ 00000318				_addToRevStr:
+ 00000318  FC					cld								; Clear direction flag
+ 00000319  AA					STOSB							; Store ASCII value in AL into memory address in EDI and increment EDI by 1 Byte
+ 0000031A  58					pop		eax						; Restore number being converted
+ 0000031B  41					inc		ecx						
+ 0000031C  EB C5				jmp		_convertStrLoop			; Loop back up to convert next remainder
 					
 					; Jumping off point for the loop below, initializes registers
- 000002FB				_revToCorrect:
- 000002FB  8B 75 0C				mov		esi, [ebp+12]			; Point ESI to revStr
- 000002FE  03 F1				add		esi, ecx
- 00000300  4E					dec		esi						; Point ESI to last character in revStr
- 00000301  8B 7D 10				mov		edi, [ebp+16]			; Point EDI to userStr
+ 0000031E				_revToCorrect:
+ 0000031E  8B 75 0C				mov		esi, [ebp+12]			; Point ESI to revStr
+ 00000321  03 F1				add		esi, ecx
+ 00000323  4E					dec		esi						; Point ESI to last character in revStr
+ 00000324  8B 7D 10				mov		edi, [ebp+16]			; Point EDI to userStr
 
- 00000304					_revLoop:
- 00000304  FD						std								; Set direction flag so that LODSB decrements ESI
- 00000305  AC						LODSB							; Load current address of revStr character in ESI into register AL
- 00000306  FC						cld								; Clear direction flag so that STOSB increments EDI
- 00000307  AA						STOSB							; Load current value in AL into current address of userStr in EDI
- 00000308  E2 FA					loop	_revLoop				; Loop again until ECX is 0
+ 00000327					_revLoop:
+ 00000327  FD						std								; Set direction flag so that LODSB decrements ESI
+ 00000328  AC						LODSB							; Load current address of revStr character in ESI into register AL
+ 00000329  FC						cld								; Clear direction flag so that STOSB increments EDI
+ 0000032A  AA						STOSB							; Load current value in AL into current address of userStr in EDI
+ 0000032B  E2 FA					loop	_revLoop				; Loop again until ECX is 0
 
- 0000030A  EB 06				jmp		_end						; Executes after ECX is found to be 0
+ 0000032D  EB 06				jmp		_end						; Executes after ECX is found to be 0
 
 					; Store the ASCII value for 0 in the userStr array, then continue down
- 0000030C				_inputIsZero:
- 0000030C  8B 7D 10				mov		edi, [ebp+16]
- 0000030F  B0 30				mov		al, ZERO_ASCII
- 00000311  AA					STOSB					; No need to clear flag since execution only has to store one ASCII value 
+ 0000032F				_inputIsZero:
+ 0000032F  8B 7D 10				mov		edi, [ebp+16]
+ 00000332  B0 30				mov		al, ZERO_ASCII
+ 00000334  AA					STOSB					; No need to clear flag since execution only has to store one ASCII value 
 					
 					; Print final string stored in the userStr string array
- 00000312				_end:
+ 00000335				_end:
 					mDisplayString	DWORD ptr [ebp+16]
- 00000312  52		     1		push	edx
- 00000313  8B 55 10	     1		mov		edx, DWORD ptr [ebp+16]	; strLocation placeholder is replaced by a memory offest
- 00000316  E8 00000000 E     1		call	WriteString
- 0000031B  5A		     1		pop		edx
+ 00000335  52		     1		push	edx
+ 00000336  8B 55 10	     1		mov		edx, DWORD ptr [ebp+16]	; strLocation placeholder is replaced by a memory offest
+ 00000339  E8 00000000 E     1		call	WriteString
+ 0000033E  5A		     1		pop		edx
 
 					; Restore used registers, de-reference 8 Bytes of parameters, and return control to main
- 0000031C  5F				pop		edi
- 0000031D  5E				pop		esi
- 0000031E  5A				pop		edx
- 0000031F  59				pop		ecx
- 00000320  58				pop		eax
- 00000321  5D				pop		ebp
- 00000322  C2 0010			ret		16
- 00000325			WriteVal ENDP
+ 0000033F  5F				pop		edi
+ 00000340  5E				pop		esi
+ 00000341  5A				pop		edx
+ 00000342  59				pop		ecx
+ 00000343  58				pop		eax
+ 00000344  5D				pop		ebp
+ 00000345  C2 0010			ret		16
+ 00000348			WriteVal ENDP
 
 				; --------------------------------------------------------------------------------------
 				; Name: clearStrArray
@@ -794,38 +838,38 @@ Microsoft (R) Macro Assembler Version 14.29.30137.0	    12/05/21 17:34:46
 				;	  string array  = empty 13-Byte array
 				;
 				; --------------------------------------------------------------------------------------
- 00000325			clearStrArray PROC
+ 00000348			clearStrArray PROC
 					
 					; Preserve used registers and assign static stack-fram pointer
- 00000325  55				push	ebp
- 00000326  8B EC			mov		ebp, esp
- 00000328  50				push	eax
- 00000329  51				push	ecx
- 0000032A  57				push	edi
+ 00000348  55				push	ebp
+ 00000349  8B EC			mov		ebp, esp
+ 0000034B  50				push	eax
+ 0000034C  51				push	ecx
+ 0000034D  57				push	edi
 
 					; Initialize ECX to the number of Bytes to replace and EDI to point to the address of the array to modify
- 0000032B  B9 0000000C			mov		ecx, 12
- 00000330  8B 7D 08			mov		edi, [ebp+8]
+ 0000034E  B9 0000000C			mov		ecx, 12
+ 00000353  8B 7D 08			mov		edi, [ebp+8]
 					
 					; Set each Byte in the array to 0
- 00000333				_clearLoop:
- 00000333  B0 00				mov		al, 0
- 00000335  FC					cld
- 00000336  AA					STOSB				; Store value in AL into memory address of string array in EDI
- 00000337  E2 FA				loop	_clearLoop
+ 00000356				_clearLoop:
+ 00000356  B0 00				mov		al, 0
+ 00000358  FC					cld
+ 00000359  AA					STOSB				; Store value in AL into memory address of string array in EDI
+ 0000035A  E2 FA				loop	_clearLoop
 
 					; Restore used registers, de-reference 4 Bytes of parameters, and return control to calling procedure
- 00000339  5F				pop		edi
- 0000033A  59				pop		ecx
- 0000033B  58				pop		eax
- 0000033C  5D				pop		ebp
- 0000033D  C2 0004			ret		4
+ 0000035C  5F				pop		edi
+ 0000035D  59				pop		ecx
+ 0000035E  58				pop		eax
+ 0000035F  5D				pop		ebp
+ 00000360  C2 0004			ret		4
 
- 00000340			clearStrArray ENDP
+ 00000363			clearStrArray ENDP
 
 				END main
-Microsoft (R) Macro Assembler Version 14.29.30137.0	    12/05/21 17:34:46
-)Program Template     (Proj6_lubranoa.asm		     Symbols 2 - 1
+Microsoft (R) Macro Assembler Version 14.29.30137.0	    12/05/21 19:11:32
+;Designing Low-Level I/O Procedures     (Proj6_lubranoa.asm  Symbols 2 - 1
 
 
 
@@ -927,7 +971,7 @@ Segments and Groups:
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
 _DATA  . . . . . . . . . . . . .	32 Bit	 0000029C Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 00000340 Para	  Public  'CODE'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000363 Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -997,17 +1041,18 @@ ReadInt  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 ReadKeyFlush . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 ReadKey  . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 ReadString . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-ReadVal  . . . . . . . . . . . .	P Near	 00000190 _TEXT	Length= 0000011B Public STDCALL
+ReadVal  . . . . . . . . . . . .	P Near	 00000190 _TEXT	Length= 0000013E Public STDCALL
   _invalidInput  . . . . . . . .	L Near	 000001B4 _TEXT	
   _validate  . . . . . . . . . .	L Near	 000001E7 _TEXT	
   _convertNum  . . . . . . . . .	L Near	 00000203 _TEXT	
   _convertNumLoop  . . . . . . .	L Near	 00000213 _TEXT	
   _updateUserNum . . . . . . . .	L Near	 00000224 _TEXT	
-  _secondToLast  . . . . . . . .	L Near	 00000246 _TEXT	
-  _lastCharacter . . . . . . . .	L Near	 00000254 _TEXT	
-  _convertNegNum . . . . . . . .	L Near	 00000272 _TEXT	
-  _updateHelpers . . . . . . . .	L Near	 0000027A _TEXT	
-  _end . . . . . . . . . . . . .	L Near	 00000290 _TEXT	
+  _secondToLast  . . . . . . . .	L Near	 00000245 _TEXT	
+  _lastCharacter . . . . . . . .	L Near	 00000253 _TEXT	
+  _nonSignLastChar . . . . . . .	L Near	 0000025F _TEXT	
+  _convertToPosNum . . . . . . .	L Near	 0000028C _TEXT	
+  _updateHelpers . . . . . . . .	L Near	 0000029A _TEXT	
+  _end . . . . . . . . . . . . .	L Near	 000002B3 _TEXT	
 SetConsoleCursorInfo . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 SetConsoleCursorPosition . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 SetConsoleMode . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -1044,18 +1089,18 @@ WriteStackFrameName  . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 WriteStackFrame  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteString  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 WriteToFile  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-WriteVal . . . . . . . . . . . .	P Near	 000002AB _TEXT	Length= 0000007A Public STDCALL
-  _convertStrLoop  . . . . . . .	L Near	 000002C0 _TEXT	
-  _convertNegStr . . . . . . . .	L Near	 000002D6 _TEXT	
-  _addNegativeSign . . . . . . .	L Near	 000002E5 _TEXT	
-  _addToRevStr . . . . . . . . .	L Near	 000002F5 _TEXT	
-  _revToCorrect  . . . . . . . .	L Near	 000002FB _TEXT	
-  _revLoop . . . . . . . . . . .	L Near	 00000304 _TEXT	
-  _inputIsZero . . . . . . . . .	L Near	 0000030C _TEXT	
-  _end . . . . . . . . . . . . .	L Near	 00000312 _TEXT	
+WriteVal . . . . . . . . . . . .	P Near	 000002CE _TEXT	Length= 0000007A Public STDCALL
+  _convertStrLoop  . . . . . . .	L Near	 000002E3 _TEXT	
+  _convertNegStr . . . . . . . .	L Near	 000002F9 _TEXT	
+  _addNegativeSign . . . . . . .	L Near	 00000308 _TEXT	
+  _addToRevStr . . . . . . . . .	L Near	 00000318 _TEXT	
+  _revToCorrect  . . . . . . . .	L Near	 0000031E _TEXT	
+  _revLoop . . . . . . . . . . .	L Near	 00000327 _TEXT	
+  _inputIsZero . . . . . . . . .	L Near	 0000032F _TEXT	
+  _end . . . . . . . . . . . . .	L Near	 00000335 _TEXT	
 WriteWindowsMsg  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-clearStrArray  . . . . . . . . .	P Near	 00000325 _TEXT	Length= 0000001B Public STDCALL
-  _clearLoop . . . . . . . . . .	L Near	 00000333 _TEXT	
+clearStrArray  . . . . . . . . .	P Near	 00000348 _TEXT	Length= 0000001B Public STDCALL
+  _clearLoop . . . . . . . . . .	L Near	 00000356 _TEXT	
 main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000190 Public STDCALL
   _getNumberLoop . . . . . . . .	L Near	 00000027 _TEXT	
   _writeLoop . . . . . . . . . .	L Near	 0000008A _TEXT	
@@ -1151,8 +1196,8 @@ KEY_EVENT  . . . . . . . . . . .	Number	 00000001h
 KEY_MASKS  . . . . . . . . . . .	Number	 0000001Fh   
 LEFT_ALT_PRESSED . . . . . . . .	Number	 00000002h   
 LEFT_CTRL_PRESSED  . . . . . . .	Number	 00000008h   
+MAX_ARR_SIZE . . . . . . . . . .	Number	 0000000Dh   
 MAX_STR_SIZE . . . . . . . . . .	Number	 0000000Bh   
-MAX_VALUE  . . . . . . . . . . .	Number	 7FFFFFFFh   
 MB_ABORTRETRYIGNORE  . . . . . .	Number	 00000002h   
 MB_APPLMODAL . . . . . . . . . .	Number	 00000000h   
 MB_CANCELTRYCONTINUE . . . . . .	Number	 00000006h   
@@ -1179,7 +1224,6 @@ MB_YESNOCANCEL . . . . . . . . .	Number	 00000003h
 MB_YESNO . . . . . . . . . . . .	Number	 00000004h   
 MENU_EVENT . . . . . . . . . . .	Number	 00000008h   
 MINUS_ASCII  . . . . . . . . . .	Number	 0000002Dh   
-MIN_VALUE  . . . . . . . . . . .	Number	 -80000000h   
 MOUSE_EVENT  . . . . . . . . . .	Number	 00000002h   
 MessageBox . . . . . . . . . . .	Text   	 MessageBoxA
 NINE_ASCII . . . . . . . . . . .	Number	 00000039h   
