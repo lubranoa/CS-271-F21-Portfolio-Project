@@ -18,7 +18,7 @@
   <!-- Titles and Subtitles -->
   <h1 align="center">Low-Level I/O Procedures in Assembly</h1>
   <p align="center">
-    <b>An x86-32 MASM Interactive Program for Data Input, Validation, and Manipulation using String Primitives and Macros</b>
+    <b>An Interactive Program in MASM-style x86-32 Assembly for Data Input, Validation, and Manipulation using String Primitives and Macros</b>
   </p>
   <p align="center">
     Fall 2021 · <a href="https://ecampus.oregonstate.edu/soc/ecatalog/ecoursedetail.htm?subject=CS&coursenumber=271&termcode=ALL">CS 271 - Computer Architecture and Assembly Language </a> · Oregon State University
@@ -44,18 +44,25 @@
 
 <!-- Project Description -->
 ## Project Description
-Overarching description of program easy for anyone to understand.
+This program is an x86 assembly language program designed to perform string processing and low-level I/O operations. It involves the implementation of macros for string processing and procedures for handling signed integers using string primitive instructions. The program gets some user input of signed integers, validates each, then shows the user the numbers they entered along with the results of some arithmetic operations using those numbers.
 
 <!-- Technologies Used -->
 ## Technologies Used
    - [![x86-asm][x86-asm]][x86-asm-url]
+   - [![irvine32][irvine32]][irvine32-url] (for Pre-built I/O Procedures)
+   - [![masm][masm]][masm-url]
    - [![visual-studio][visual-studio]][visual-studio-url]
-   - [![irvine32][irvine32]][irvine32-url]
 
 <!-- Features -->
 ## Features
-   
-Short descriptions
+  - Prints an introduction and instructions to show the user hello and how to use the program.
+  - Validates each of the entered signed decimal integers for incorrect characters.
+  - Converts the strings to integers to calculate the sum and truncated average of the numbers.
+  - Prints the numbers and results of the calculations back to the user and exits.
+  - All strings are printed to the user using a macro.
+  - All user input is captured using using a macro.
+  - Uses some pre-built Input/Output procedures from the Irvine32 Library.
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -84,9 +91,11 @@ Project Link: <a href="https://github.com/lubranoa/CS-271-F21-Portfolio-Project"
 
 <!-- Acknowledgements -->
 ## Acknowledgements
+  - <a href="https://www.intel.com/content/www/us/en/content-details/782158/intel-64-and-ia-32-architectures-software-developer-s-manual-combined-volumes-1-2a-2b-2c-2d-3a-3b-3c-3d-and-4.html?wapkw=intel%2064%20and%20ia-32%20architectures%20software%20developer%27s%20manual&docid=782159">Intel 64 and IA-32 Architectures Software Developer’s Manual</a>
+  - <a href="https://learn.microsoft.com/en-us/cpp/assembler/masm/microsoft-macro-assembler-reference?view=msvc-170">Microsoft Macro Assembler (MASM) Reference</a>
   - <a href="http://www.asmirvine.com/index.htm">"Assembly Language for x86 Processors" by Kip Irvine</a>
-  - [CS 271 Style Guide](/docs/CS271%20Style%20Guide.pdf)
   - <a href="https://visualstudio.microsoft.com/">Visual Studio 2019</a>
+  - [CS 271 Style Guide](/docs/CS271%20Style%20Guide.pdf)
   - <a href="https://shields.io/">Shields.io</a>
   - <a href="https://simpleicons.org/">Simple Icons</a>
 
@@ -94,10 +103,13 @@ Project Link: <a href="https://github.com/lubranoa/CS-271-F21-Portfolio-Project"
 
 <!-- Markdown links -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[x86-asm]: https://img.shields.io/badge/x86--32_Assembly-grey?style=for-the-badge
-[x86-asm-url]: https://en.wikipedia.org/wiki/X86_assembly_language
+[x86-asm]: https://img.shields.io/badge/x86--32_Assembly_Language-grey?style=for-the-badge
+[x86-asm-url]: https://www.intel.com/content/www/us/en/content-details/782158/intel-64-and-ia-32-architectures-software-developer-s-manual-combined-volumes-1-2a-2b-2c-2d-3a-3b-3c-3d-and-4.html?wapkw=intel%2064%20and%20ia-32%20architectures%20software%20developer%27s%20manual&docid=782159
 
-[visual-studio]: https://img.shields.io/badge/Visual_Studio_2019-5C2D91?style=for-the-badge&logo=visualstudio
+[masm]: https://img.shields.io/badge/Microsoft_Macro_Assembler_(MASM)-grey?style=for-the-badge
+[masm-url]: https://learn.microsoft.com/en-us/cpp/assembler/masm/microsoft-macro-assembler-reference?view=msvc-170
+
+[visual-studio]: https://img.shields.io/badge/Visual_Studio_2019-grey?style=for-the-badge&logo=visualstudio&logoColor=5C2D91
 [visual-studio-url]: https://visualstudio.microsoft.com/
 
 [irvine32]: https://img.shields.io/badge/Irvine32_Library-grey?style=for-the-badge
