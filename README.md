@@ -50,6 +50,7 @@ Overarching description of program easy for anyone to understand.
 ## Technologies Used
    - [![x86-asm][x86-asm]][x86-asm-url]
    - [![visual-studio][visual-studio]][visual-studio-url]
+   - [![irvine32][irvine32]][irvine32-url]
 
 <!-- Features -->
 ## Features
@@ -83,6 +84,9 @@ Project Link: <a href="https://github.com/lubranoa/CS-271-F21-Portfolio-Project"
 
 <!-- Acknowledgements -->
 ## Acknowledgements
+  - <a href="http://www.asmirvine.com/index.htm">"Assembly Language for x86 Processors" by Kip Irvine</a>
+  - [CS 271 Style Guide](/docs/CS271%20Style%20Guide.pdf)
+  - <a href="https://visualstudio.microsoft.com/">Visual Studio 2019</a>
   - <a href="https://shields.io/">Shields.io</a>
   - <a href="https://simpleicons.org/">Simple Icons</a>
 
@@ -95,3 +99,6 @@ Project Link: <a href="https://github.com/lubranoa/CS-271-F21-Portfolio-Project"
 
 [visual-studio]: https://img.shields.io/badge/Visual_Studio_2019-5C2D91?style=for-the-badge&logo=visualstudio
 [visual-studio-url]: https://visualstudio.microsoft.com/
+
+[irvine32]: https://img.shields.io/badge/Irvine32_Library-grey?style=for-the-badge
+[irvine32-url]:http://www.asmirvine.com/gettingStartedVS2019/index.htm
