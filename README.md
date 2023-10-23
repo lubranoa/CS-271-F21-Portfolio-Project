@@ -3,6 +3,7 @@
 
 <!-- Centered title section with descriptive lines -->
 <div align="center">
+  <!-- Title Section Links -->
   <p>
     <a href="www.linkedin.com/in/lubrano-alexander">
       <img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin" alt="linkedin link" />
@@ -36,23 +37,28 @@
   - [Skills Used](#skills-used)
     - [Skill 1](#skill-1)
     - [Skill 2](#skill-2)
-  - [References](#references)
+  - [Contact](#contact)
+  - [Acknowledgements](#acknowledgements)
 
 </details>
 
+<!-- Project Description -->
 ## Project Description
 Overarching description of program easy for anyone to understand.
 
+<!-- Technologies Used -->
 ## Technologies Used
    - [![x86-asm][x86-asm]][x86-asm-url]
    - [![visual-studio][visual-studio]][visual-studio-url]
 
+<!-- Features -->
 ## Features
    
 Short descriptions
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+<!-- Usage -->
 ## Usage
 
 Explain how to use or interact with your project
@@ -67,11 +73,18 @@ Explain how to use or interact with your project
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## Author
+<!-- Contact -->
+## Contact
+Alexander Lubrano - <a href="mailto:lubrano.alexander@gmail.com">lubrano.alexander@gmail.com</a> - <a href="www.linkedin.com/in/lubrano-alexander">LinkedIn</a>
+
+Project Link: <a href="https://github.com/lubranoa/CS-271-F21-Portfolio-Project">https://github.com/lubranoa/CS-271-F21-Portfolio-Project</a>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## References
+<!-- Acknowledgements -->
+## Acknowledgements
+  - <a href="https://shields.io/">Shields.io</a>
+  - <a href="https://simpleicons.org/">Simple Icons</a>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
