@@ -15,6 +15,7 @@
       <img src="https://img.shields.io/badge/GitHub-8A2BE2?style=for-the-badge&logo=github" alt="github profile link" />
     </a>
   </p>
+  <br/>
   <!-- Titles and Subtitles -->
   <h1 align="center">Designing Low-Level I/O Procedures in Assembly</h1>
   <p align="center">
@@ -35,8 +36,15 @@
   - [Features](#features)
   - [Usage](#usage)
   - [Skills Used](#skills-used)
-    - [Skill 1](#skill-1)
-    - [Skill 2](#skill-2)
+    - [String Processing](#string-processing-with-string-primitive-instructions)
+    - [Macro Implementation](#implementation-and-usage-of-macros)
+    - [Input Validation and Conversion](#handling-user-input-validation-and-conversion)
+    - [Implementing Low-level I/O Procedures](#implementing-low-level-io-procedures)
+    - [x86 Instructions](#utilizing-x86-assembly-instructions)
+    - [Passing Parameters on Runtime Stack](#passing-parameters-on-the-runtime-stack-using-stdcall-calling-convention)
+    - [Register Use and Stack Management](#proper-use-of-registers-and-stack-management)
+    - [Coding Style and Documentation](#implementing-coding-style-and-documentation)
+    - [External Libraries](#comprehension-and-use-of-external-libraries)
   - [Contact](#contact)
   - [Acknowledgements](#acknowledgements)
 
@@ -113,10 +121,34 @@ Press any key to continue . . .
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Skills Used
-#### Skill 1:
-  - description
-#### Skill 2:
-  - description
+In completing this project, several key skills in assembly language programming were applied:
+
+#### String Processing with String Primitive Instructions:
+  - This project required an understanding of string manipulation using string primitive instructions. The program is designed to handle user input as strings and perform conversion, validation, and manipulation operations on these strings.
+
+#### Implementation and Usage of Macros:
+  - The project involved the creation and utilization of macros. Macros were used to streamline the process of reading user input and displaying strings. The `mGetString` and `mDisplayString` macros encapsulated specific functionality for string output and user input retrieval.
+
+#### Handling User Input Validation and Conversion:
+  - The project required implementing logic for user input validation. This involved scrutinizing user input to ensure it contains only valid numeric characters and is within the permissible range for 32-bit registers. Additionally, string-to-numeric conversion was performed to translate user input into numeric values.
+
+#### Implementing Low-Level I/O Procedures:
+  - A fundamental aspect of the project was the use of low-level input and output procedures. This included obtaining user input using the built-in procedures `ReadString` and displaying strings using `WriteString`, which use the built-in macros to facilitate user interaction.
+
+#### Utilizing x86 Assembly Instructions:
+  - The project required proficiency in x86 assembly instructions for both integer and string manipulation. Assembly instructions were employed for converting between string and numeric representations, arithmetic operations, and addressing memory locations efficiently.
+
+#### Passing Parameters on the Runtime Stack Using STDCALL Calling Convention:
+  - To ensure proper function call and parameter passing, the STDCALL calling convention was applied. Parameters were pushed onto the runtime stack, and the stack frame was cleaned up by called procedures to maintain program integrity.
+
+#### Proper Use of Registers and Stack Management:
+  - To prevent conflicts and ensure that registers maintain their values across function calls, careful management of registers was required. Procedures and macros saved and restored registers as necessary, following best practices.
+
+#### Implementing Coding Style and Documentation:
+  - The project adhered to the CS271 Style Guide, emphasizing clean and organized code. This included comprehensive documentation through header blocks, comments outlining each section of code, and clear procedure headers and documentation.
+
+#### Comprehension and Use of External Libraries:
+  - This project required the use of an external library of I/O procedures written by Kip Irvine called the Irvine32 Library. Understanding the documentation for this library was necessary to use these procedures in facilitating the program's interactions with the command line and users.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
