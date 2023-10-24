@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.29.30137.0	    12/05/21 19:11:32
+Microsoft (R) Macro Assembler Version 14.29.30136.0	    12/08/21 10:09:22
 ;Designing Low-Level I/O Procedures     (Proj6_lubranoa.asm  Page 1 - 1
 
 
@@ -550,7 +550,7 @@ Microsoft (R) Macro Assembler Version 14.29.30137.0	    12/05/21 19:11:32
  0000020E  BB 0000000A				mov		ebx, 10					; Initialize EBX to hold the value 10
 						
 						
-						; Top of loop
+						; Top of string conversion loop
  00000213					_convertNumLoop:
  00000213  33 C0					xor		eax, eax					; Clear EAX each iteration
  00000215  83 F9 01					cmp		ecx, 1
@@ -588,6 +588,7 @@ Microsoft (R) Macro Assembler Version 14.29.30137.0	    12/05/21 19:11:32
  00000243  77 55					ja		_updateHelpers				; Else, if value is not 2nd to last, jump to _updateHelpers
 																; Otherwise, continue down
 
+						; Checks if last character is a digit on second to last iteration
  00000245					_secondToLast:
  00000245  49						dec		ecx							; Pre-decrement ECX in case of jump to top of loop
  00000246  80 3E 30					cmp		BYTE ptr [esi], ZERO_ASCII
@@ -597,26 +598,27 @@ Microsoft (R) Macro Assembler Version 14.29.30137.0	    12/05/21 19:11:32
  00000250  41						inc		ecx
  00000251  EB 47					jmp		_updateHelpers				; Otherwise, character = digit so, re-increment ECX and ESI then jump to _updateHelpers
 						
+						; Handles last character differently if it is a positive sign, non-sign, or negative sign
  00000253					_lastCharacter:
-
  00000253  80 3E 2B					cmp		BYTE ptr [esi], PLUS_ASCII
- 00000256  74 34					jz		_convertToPosNum			; Else, if last character ASCII = plus sign ASCII, jump to _end
+ 00000256  74 34					jz		_convertToPosNum			; If last character ASCII = plus sign ASCII, jump to _convertToPosNum
  00000258  80 3E 2D					cmp		BYTE ptr [esi], MINUS_ASCII
- 0000025B  75 02					jnz		_nonSignLastChar
- 0000025D  74 54					jz		_end						; If last character ASCII = minus sign ASCII, jump to _convertNegNum			
+ 0000025B  75 02					jnz		_nonSignLastChar			; Else, if last charaacter ACII != minus sign ASCII, jump to _nonSignLastChar
+ 0000025D  74 54					jz		_end						; Otherwise, last character ASCII = minus sign ASCII, jump to _end	
 							
+						; Handles non-sign last characters
  0000025F					_nonSignLastChar:
  0000025F  80 3E 30					cmp		BYTE ptr [esi], ZERO_ASCII
  00000262  0F 82 FFFFFF4C				jb		_invalidInput
  00000268  80 3E 39					cmp		BYTE ptr [esi], NINE_ASCII
- 0000026B  0F 87 FFFFFF43				ja		_invalidInput				; Else, if last character != digit ASCII, the number is invalid so, jump to _invalidInput
+ 0000026B  0F 87 FFFFFF43				ja		_invalidInput				; If non-sign last character != digit ASCII, the number is invalid so, jump to _invalidInput
 							
-							; Get character's actual value (all characters that reach this block are digits 0-9)
- 00000271  FD						std									; Set direction flag for LODSB
+							; Get final character's actual value
+ 00000271  FD						std
  00000272  AC						LODSB								; Load ASCII value from address of userStr in ESI into AL and decrement ESI
  00000273  2C 30					sub		al, ZERO_ASCII				; Subtract ZERO_ASCII value from character's ASCII value to get its numerical value
 							
-							; Multiply this iteration by its power of 10 (first iteration is multiplied by 1)
+							; Multiply by its power of 10
  00000275  56						push	esi
  00000276  52						push	edx
  00000277  8B 75 08					mov		esi, [ebp+8]				; Put address of multiplication helper in ESI
@@ -628,7 +630,7 @@ Microsoft (R) Macro Assembler Version 14.29.30137.0	    12/05/21 19:11:32
 							; Add the value in EAX to the value in the UserNum label to update running total
  00000284  29 07					sub		[edi], eax
  00000286  0F 80 FFFFFF28				jo		_invalidInput				; If addition resulted in an overflow condition, the number is too big
-
+																; Otherwise, continue down to conversion to positive number
 
 						; Convert negative integer to positive integer
  0000028C					_convertToPosNum:
@@ -868,7 +870,7 @@ Microsoft (R) Macro Assembler Version 14.29.30137.0	    12/05/21 19:11:32
  00000363			clearStrArray ENDP
 
 				END main
-Microsoft (R) Macro Assembler Version 14.29.30137.0	    12/05/21 19:11:32
+Microsoft (R) Macro Assembler Version 14.29.30136.0	    12/08/21 10:09:22
 ;Designing Low-Level I/O Procedures     (Proj6_lubranoa.asm  Symbols 2 - 1
 
 

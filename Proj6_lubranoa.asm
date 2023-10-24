@@ -94,7 +94,7 @@ NINE_ASCII	 = 57
 ; Descriptive string Byte arrays for printing to console
 titleStr	BYTE	"CS 271 ASSIGNMENT 6: Designing Low-Level I/O Procedures",13,10,"Written by: Alexander Lubrano",13,10,0
 introStr	BYTE	"Please provide 10 signed decimal integers.",13,10,
-					"Each number needs to be small enough to fit inside aaa 32-bit register. After you have",13,10,
+					"Each number needs to be small enough to fit inside a 32-bit register. After you have",13,10,
 					"finished entering the raw numbers, this program will display a list of the integers, their",13,10,
 					"sum, and their average value.",13,10,0
 promptStr	BYTE	"Please enter a signed integer: ",0
