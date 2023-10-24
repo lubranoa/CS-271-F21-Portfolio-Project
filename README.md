@@ -44,7 +44,7 @@
 
 <!-- Project Description -->
 ## Project Description
-This program is an x86 assembly language program designed to perform string processing and low-level I/O operations. It involves the implementation of macros for string processing and procedures for handling signed integers using string primitive instructions. The program gets some user input of signed integers, validates each, then shows the user the numbers they entered along with the results of some arithmetic operations using those numbers.
+This program is an x86 assembly language program designed to perform string processing and low-level I/O operations. It involves the implementation of macros for string processing and procedures for handling signed integers using string primitive instructions. The program gets some user input of signed integers, validates each, then shows the user the numbers they entered along with the results of some arithmetic operations using those numbers. The program is formatted in accordance with the [CS271 Style Guide](/docs/CS271%20Style%20Guide.pdf).
 
 <!-- Technologies Used -->
 ## Technologies Used
@@ -63,13 +63,52 @@ This program is an x86 assembly language program designed to perform string proc
   - All user input is captured using using a macro.
   - Uses some pre-built Input/Output procedures from the Irvine32 Library.
 
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- Usage -->
 ## Usage
+To use this program, the project must be opened in Visual Studio 2019 using the project's [solution file](/Project.sln). The program will not work unless the Irvine32 Library has been successfully extracted into the `C:\` directory, which was the required installation location for this course. The `Irvine.zip` file can be downloaded from the web page ["Getting Started with MASM and Visual Studio 2019"](http://www.asmirvine.com/gettingStartedVS2019/index.htm) by Kip Irvine. This also contains environment setup and running instructions that may be different than what the professor of CS 271 required.
 
-Explain how to use or interact with your project
+To run the program after opening `Project.sln` in Visual Studio, go to debug and select 'Run Without Debugging' or press `Ctrl` + `F5`. Then, follow directions until the end of the program. The output should look like the example below.
+
+```
+Written by: Alexander Lubrano
+
+Please provide 10 signed decimal integers.
+Each number needs to be small enough to fit inside a 32-bit register. After you have
+finished entering the raw numbers, this program will display a list of the integers, their
+sum, and their average value.
+
+Please enter a signed integer: 138
+Please enter a signed integer: -9
+Please enter a signed integer: +22
+Please enter a signed integer: 12912
+Please enter a signed integer: 53j9332
+ERROR: You did not enter a signed integer or your integer was too big.
+Please try again: 903214o
+ERROR: You did not enter a signed integer or your integer was too big.
+Please try again: 47
+Please enter a signed integer: -0
+Please enter a signed integer: 000000000
+Please enter a signed integer: 8318502012351883912345
+ERROR: You did not enter a signed integer or your integer was too big.
+Please try again: '1'
+ERROR: You did not enter a signed integer or your integer was too big.
+Please try again: \n
+ERROR: You did not enter a signed integer or your integer was too big.
+Please try again: 84
+Please enter a signed integer: -1399023
+Please enter a signed integer: 832
+
+You entered the following numbers:
+138, -9, 22, 12912, 47, 0, 0, 84, -1399023, 832
+The sum of these numbers is: -1384997
+The truncated average is: -138499
+
+Hope this was fun!
+- Alex
+Press any key to continue . . .
+```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
