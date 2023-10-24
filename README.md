@@ -1,9 +1,9 @@
 <!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
 <a name="readme-top"></a>
 
-<!-- Centered title section with descriptive lines -->
+<!-- Centered title section -->
 <div align="center">
-  <!-- Title Section Links -->
+  <!-- Badges -->
   <p>
     <a href="www.linkedin.com/in/lubrano-alexander">
       <img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin" alt="linkedin link" />
@@ -15,7 +15,7 @@
       <img src="https://img.shields.io/badge/GitHub-8A2BE2?style=for-the-badge&logo=github" alt="github profile link" />
     </a>
   </p>
-  <br/>
+  <br />
   <!-- Titles and Subtitles -->
   <h1 align="center">Designing Low-Level I/O Procedures in Assembly</h1>
   <p align="center">
@@ -35,7 +35,7 @@
   - [Technologies Used](#technologies-used)
   - [Features](#features)
   - [Usage](#usage)
-  - [Skills Used](#skills-used)
+  - [Skills Applied](#skills-applied)
     - [String Processing](#string-processing-with-string-primitive-instructions)
     - [Macro Implementation](#implementation-and-usage-of-macros)
     - [Input Validation and Conversion](#handling-user-input-validation-and-conversion)
@@ -61,6 +61,8 @@ This program is an x86 assembly language program designed to perform string proc
    - [![masm][masm]][masm-url]
    - [![visual-studio][visual-studio]][visual-studio-url]
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 <!-- Features -->
 ## Features
   - Prints an introduction and instructions to show the user hello and how to use the program.
@@ -75,7 +77,7 @@ This program is an x86 assembly language program designed to perform string proc
 
 <!-- Usage -->
 ## Usage
-To use this program, the project must be opened in Visual Studio 2019 using the project's [solution file](/Project.sln). The program will not work unless the Irvine32 Library has been successfully extracted into the `C:\` directory, which was the required installation location for this course. The `Irvine.zip` file can be downloaded from the web page ["Getting Started with MASM and Visual Studio 2019"](http://www.asmirvine.com/gettingStartedVS2019/index.htm) by Kip Irvine. This also contains environment setup and running instructions that may be different than what the professor of CS 271 required.
+To use this program, the project must be opened in Visual Studio 2019 using the project's [solution file](/Project.sln). The program will not work unless the Irvine32 Library has been successfully extracted into the `C:\` directory, which was the required installation location for this course. The `Irvine.zip` file can be downloaded from the web page ["Getting Started with MASM and Visual Studio 2019"][asm-irvine-url] by Kip Irvine. This also contains environment setup and running instructions that may be different than what the professor of CS 271 required.
 
 To run the program after opening `Project.sln` in Visual Studio, go to debug and select 'Run Without Debugging' or press `Ctrl` + `F5`. Then, follow directions until the end of the program. The output should look like the example below.
 
@@ -120,7 +122,8 @@ Press any key to continue . . .
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## Skills Used
+<!-- Skills Applied -->
+## Skills Applied
 In completing this project, several key skills in assembly language programming were applied:
 
 #### String Processing with String Primitive Instructions:
@@ -154,21 +157,21 @@ In completing this project, several key skills in assembly language programming 
 
 <!-- Contact -->
 ## Contact
-Alexander Lubrano - [lubrano.alexander@gmail.com](mailto:lubrano.alexander@gmail.com) - [LinkedIn](www.linkedin.com/in/lubrano-alexander)
+Alexander Lubrano - [lubrano.alexander@gmail.com][email] - [LinkedIn][linkedin-url]
 
-Project Link: [https://github.com/lubranoa/CS-271-F21-Portfolio-Project](https://github.com/lubranoa/CS-271-F21-Portfolio-Project)
+Project Link: [https://github.com/lubranoa/CS-271-F21-Portfolio-Project][repo-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- Acknowledgements -->
 ## Acknowledgements
-  - [Intel 64 and IA-32 Architectures Software Developer’s Manual](https://www.intel.com/content/www/us/en/content-details/782158/intel-64-and-ia-32-architectures-software-developer-s-manual-combined-volumes-1-2a-2b-2c-2d-3a-3b-3c-3d-and-4.html?wapkw=intel%2064%20and%20ia-32%20architectures%20software%20developer%27s%20manual&docid=782159)
-  - [Microsoft Macro Assembler (MASM) Reference](https://learn.microsoft.com/en-us/cpp/assembler/masm/microsoft-macro-assembler-reference?view=msvc-170)
-  - ["Getting Started with MASM and Visual Studio 2019"](http://www.asmirvine.com/gettingStartedVS2019/index.htm)
-  - [Visual Studio 2019](https://visualstudio.microsoft.com/)
+  - [Intel 64 and IA-32 Architectures Software Developer’s Manual][ia-32-man-url]
+  - [Microsoft Macro Assembler (MASM) Reference][masm-url]
+  - ["Getting Started with MASM and Visual Studio 2019"][asm-irvine-url]
+  - [Visual Studio 2019][vs-url]
   - [CS 271 Style Guide](/docs/CS271%20Style%20Guide.pdf)
-  - [Shields.io](https://shields.io/)
-  - [Simple Icons](https://simpleicons.org/)
+  - [Shields.io][shields-url]
+  - [Simple Icons][icons-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -184,4 +187,14 @@ Project Link: [https://github.com/lubranoa/CS-271-F21-Portfolio-Project](https:/
 [visual-studio-url]: https://visualstudio.microsoft.com/
 
 [irvine32]: https://img.shields.io/badge/Irvine32_Library-grey?style=for-the-badge
-[irvine32-url]:http://www.asmirvine.com/gettingStartedVS2019/index.htm
+[irvine32-url]: http://www.asmirvine.com/gettingStartedVS2019/index.htm
+
+[ia-32-man-url]: https://www.intel.com/content/www/us/en/content-details/782158/intel-64-and-ia-32-architectures-software-developer-s-manual-combined-volumes-1-2a-2b-2c-2d-3a-3b-3c-3d-and-4.html?wapkw=intel%2064%20and%20ia-32%20architectures%20software%20developer%27s%20manual&docid=782159
+[asm-irvine-url]: http://www.asmirvine.com/gettingStartedVS2019/index.htm
+[vs-url]: https://visualstudio.microsoft.com/
+[shields-url]: https://shields.io/
+[icons-url]: https://simpleicons.org/
+
+[email]: mailto:lubrano.alexander@gmail.com
+[linkedin-url]: www.linkedin.com/in/lubrano-alexander
+[repo-url]: https://github.com/lubranoa/CS-271-F21-Portfolio-Project
