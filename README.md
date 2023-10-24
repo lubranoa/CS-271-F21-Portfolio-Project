@@ -16,7 +16,7 @@
     </a>
   </p>
   <!-- Titles and Subtitles -->
-  <h1 align="center">Low-Level I/O Procedures in Assembly</h1>
+  <h1 align="center">Designing Low-Level I/O Procedures in Assembly</h1>
   <p align="center">
     <b>An Interactive Program in MASM-style x86-32 Assembly for Data Input, Validation, and Manipulation using String Primitives and Macros</b>
   </p>
@@ -122,21 +122,21 @@ Press any key to continue . . .
 
 <!-- Contact -->
 ## Contact
-Alexander Lubrano - <a href="mailto:lubrano.alexander@gmail.com">lubrano.alexander@gmail.com</a> - <a href="www.linkedin.com/in/lubrano-alexander">LinkedIn</a>
+Alexander Lubrano - [lubrano.alexander@gmail.com](mailto:lubrano.alexander@gmail.com) - [LinkedIn](www.linkedin.com/in/lubrano-alexander)
 
-Project Link: <a href="https://github.com/lubranoa/CS-271-F21-Portfolio-Project">https://github.com/lubranoa/CS-271-F21-Portfolio-Project</a>
+Project Link: [https://github.com/lubranoa/CS-271-F21-Portfolio-Project](https://github.com/lubranoa/CS-271-F21-Portfolio-Project)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- Acknowledgements -->
 ## Acknowledgements
-  - <a href="https://www.intel.com/content/www/us/en/content-details/782158/intel-64-and-ia-32-architectures-software-developer-s-manual-combined-volumes-1-2a-2b-2c-2d-3a-3b-3c-3d-and-4.html?wapkw=intel%2064%20and%20ia-32%20architectures%20software%20developer%27s%20manual&docid=782159">Intel 64 and IA-32 Architectures Software Developer’s Manual</a>
-  - <a href="https://learn.microsoft.com/en-us/cpp/assembler/masm/microsoft-macro-assembler-reference?view=msvc-170">Microsoft Macro Assembler (MASM) Reference</a>
-  - <a href="http://www.asmirvine.com/index.htm">"Assembly Language for x86 Processors" by Kip Irvine</a>
-  - <a href="https://visualstudio.microsoft.com/">Visual Studio 2019</a>
+  - [Intel 64 and IA-32 Architectures Software Developer’s Manual](https://www.intel.com/content/www/us/en/content-details/782158/intel-64-and-ia-32-architectures-software-developer-s-manual-combined-volumes-1-2a-2b-2c-2d-3a-3b-3c-3d-and-4.html?wapkw=intel%2064%20and%20ia-32%20architectures%20software%20developer%27s%20manual&docid=782159)
+  - [Microsoft Macro Assembler (MASM) Reference](https://learn.microsoft.com/en-us/cpp/assembler/masm/microsoft-macro-assembler-reference?view=msvc-170)
+  - ["Getting Started with MASM and Visual Studio 2019"](http://www.asmirvine.com/gettingStartedVS2019/index.htm)
+  - [Visual Studio 2019](https://visualstudio.microsoft.com/)
   - [CS 271 Style Guide](/docs/CS271%20Style%20Guide.pdf)
-  - <a href="https://shields.io/">Shields.io</a>
-  - <a href="https://simpleicons.org/">Simple Icons</a>
+  - [Shields.io](https://shields.io/)
+  - [Simple Icons](https://simpleicons.org/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
