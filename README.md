@@ -46,6 +46,8 @@
 
 This program is an x86 assembly language program designed to perform string processing and low-level I/O operations. It involves the implementation of macros for string processing and procedures for handling signed integers using string primitive instructions. The program gets some user input of signed integers, validates each, then shows the user the numbers they entered along with the results of some arithmetic operations using those numbers. The program is formatted in accordance with the [CS271 Style Guide](/docs/CS271%20Style%20Guide.pdf).
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 <!-- Technologies Used -->
 ## Technologies Used
 
@@ -148,6 +150,7 @@ Press any key to continue . . .
 
 <!-- Contact -->
 ## Contact
+
 Alexander Lubrano - [lubrano.alexander@gmail.com][email] - [LinkedIn][linkedin-url]
 
 Project Link: [https://github.com/lubranoa/CS-271-F21-Portfolio-Project][repo-url]
@@ -156,6 +159,7 @@ Project Link: [https://github.com/lubranoa/CS-271-F21-Portfolio-Project][repo-ur
 
 <!-- Acknowledgments -->
 ## Acknowledgments
+
   - [Intel 64 and IA-32 Architectures Software Developer’s Manual][ia-32-man-url]
   - [Microsoft Macro Assembler (MASM) Reference][masm-url]
   - ["Getting Started with MASM and Visual Studio 2019"][asm-irvine-url]
