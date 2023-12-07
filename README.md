@@ -36,28 +36,21 @@
   - [Features](#features)
   - [Usage](#usage)
   - [Skills Applied](#skills-applied)
-    - [String Processing](#string-processing-with-string-primitive-instructions)
-    - [Macro Implementation](#implementation-and-usage-of-macros)
-    - [Input Validation and Conversion](#handling-user-input-validation-and-conversion)
-    - [Implementing Low-level I/O Procedures](#implementing-low-level-io-procedures)
-    - [x86 Instructions](#utilizing-x86-assembly-instructions)
-    - [Passing Parameters on Runtime Stack](#passing-parameters-on-the-runtime-stack-using-stdcall-calling-convention)
-    - [Register Use and Stack Management](#proper-use-of-registers-and-stack-management)
-    - [Coding Style and Documentation](#implementing-coding-style-and-documentation)
-    - [External Libraries](#comprehension-and-use-of-external-libraries)
   - [Contact](#contact)
-  - [Acknowledgements](#acknowledgements)
+  - [Acknowledgments](#acknowledgments)
 
 </details>
 
 <!-- Project Description -->
 ## Project Description
+
 This program is an x86 assembly language program designed to perform string processing and low-level I/O operations. It involves the implementation of macros for string processing and procedures for handling signed integers using string primitive instructions. The program gets some user input of signed integers, validates each, then shows the user the numbers they entered along with the results of some arithmetic operations using those numbers. The program is formatted in accordance with the [CS271 Style Guide](/docs/CS271%20Style%20Guide.pdf).
 
 <!-- Technologies Used -->
 ## Technologies Used
+
    - [![x86-asm][x86-asm]][x86-asm-url]
-   - [![irvine32][irvine32]][irvine32-url] (for Pre-built I/O Procedures)
+   - [![irvine32][irvine32]][irvine32-url] (Pre-built I/O procedures)
    - [![masm][masm]][masm-url]
    - [![visual-studio][visual-studio]][visual-studio-url]
 
@@ -65,18 +58,26 @@ This program is an x86 assembly language program designed to perform string proc
 
 <!-- Features -->
 ## Features
+
   - Prints an introduction and instructions to show the user hello and how to use the program.
+
   - Validates each of the entered signed decimal integers for incorrect characters.
+
   - Converts the strings to integers to calculate the sum and truncated average of the numbers.
+
   - Prints the numbers and results of the calculations back to the user and exits.
+
   - All strings are printed to the user using a macro.
+  
   - All user input is captured using using a macro.
+
   - Uses some pre-built Input/Output procedures from the Irvine32 Library.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- Usage -->
 ## Usage
+
 To use this program, the project must be opened in Visual Studio 2019 using the project's [solution file](/Project.sln). The program will not work unless the Irvine32 Library has been successfully extracted into the `C:\` directory, which was the required installation location for this course. The `Irvine.zip` file can be downloaded from the web page ["Getting Started with MASM and Visual Studio 2019"][asm-irvine-url] by Kip Irvine. This also contains environment setup and running instructions that may be different than what the professor of CS 271 required.
 
 To run the program after opening `Project.sln` in Visual Studio, go to debug and select 'Run Without Debugging' or press `Ctrl` + `F5`. Then, follow directions until the end of the program. The output should look like the example below.
@@ -124,34 +125,24 @@ Press any key to continue . . .
 
 <!-- Skills Applied -->
 ## Skills Applied
-In completing this project, several key skills in assembly language programming were applied:
 
-#### String Processing with String Primitive Instructions:
-  - This project required an understanding of string manipulation using string primitive instructions. The program is designed to handle user input as strings and perform conversion, validation, and manipulation operations on these strings.
+  - String processing with string primitive instructions:
 
-#### Implementation and Usage of Macros:
-  - The project involved the creation and utilization of macros. Macros were used to streamline the process of reading user input and displaying strings. The `mGetString` and `mDisplayString` macros encapsulated specific functionality for string output and user input retrieval.
+  - Implementation and usage of assembly macros
 
-#### Handling User Input Validation and Conversion:
-  - The project required implementing logic for user input validation. This involved scrutinizing user input to ensure it contains only valid numeric characters and is within the permissible range for 32-bit registers. Additionally, string-to-numeric conversion was performed to translate user input into numeric values.
+  - User input validation and string to numeric conversions of input
 
-#### Implementing Low-Level I/O Procedures:
-  - A fundamental aspect of the project was the use of low-level input and output procedures. This included obtaining user input using the built-in procedures `ReadString` and displaying strings using `WriteString`, which use the built-in macros to facilitate user interaction.
+  - Implementing low-level I/O procedures
 
-#### Utilizing x86 Assembly Instructions:
-  - The project required proficiency in x86 assembly instructions for both integer and string manipulation. Assembly instructions were employed for converting between string and numeric representations, arithmetic operations, and addressing memory locations efficiently.
+  - Utilizing x86 assembly instruction set
 
-#### Passing Parameters on the Runtime Stack Using STDCALL Calling Convention:
-  - To ensure proper function call and parameter passing, the STDCALL calling convention was applied. Parameters were pushed onto the runtime stack, and the stack frame was cleaned up by called procedures to maintain program integrity.
+  - Passing Parameters on the Runtime Stack Using STDCALL Calling Convention
 
-#### Proper Use of Registers and Stack Management:
-  - To prevent conflicts and ensure that registers maintain their values across function calls, careful management of registers was required. Procedures and macros saved and restored registers as necessary, following best practices.
+  - Proper use of registers and stack management for conflict avoidance
 
-#### Implementing Coding Style and Documentation:
-  - The project adhered to the CS271 Style Guide, emphasizing clean and organized code. This included comprehensive documentation through header blocks, comments outlining each section of code, and clear procedure headers and documentation.
+  - Implementing Coding Style and Documentation:
 
-#### Comprehension and Use of External Libraries:
-  - This project required the use of an external library of I/O procedures written by Kip Irvine called the Irvine32 Library. Understanding the documentation for this library was necessary to use these procedures in facilitating the program's interactions with the command line and users.
+  - Comprehension and Use of External Libraries
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -163,8 +154,8 @@ Project Link: [https://github.com/lubranoa/CS-271-F21-Portfolio-Project][repo-ur
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- Acknowledgements -->
-## Acknowledgements
+<!-- Acknowledgments -->
+## Acknowledgments
   - [Intel 64 and IA-32 Architectures Software Developer’s Manual][ia-32-man-url]
   - [Microsoft Macro Assembler (MASM) Reference][masm-url]
   - ["Getting Started with MASM and Visual Studio 2019"][asm-irvine-url]
@@ -196,5 +187,5 @@ Project Link: [https://github.com/lubranoa/CS-271-F21-Portfolio-Project][repo-ur
 [icons-url]: https://simpleicons.org/
 
 [email]: mailto:lubrano.alexander@gmail.com
-[linkedin-url]: www.linkedin.com/in/lubrano-alexander
+[linkedin-url]: https://www.linkedin.com/in/lubrano-alexander
 [repo-url]: https://github.com/lubranoa/CS-271-F21-Portfolio-Project
