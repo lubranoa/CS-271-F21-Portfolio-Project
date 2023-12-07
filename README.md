@@ -5,7 +5,7 @@
 <div align="center">
   <!-- Badges -->
   <p>
-    <a href="www.linkedin.com/in/lubrano-alexander">
+    <a href="https://www.linkedin.com/in/lubrano-alexander">
       <img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin" alt="linkedin link" />
     </a>
     <a href="https://lubranoa.github.io">
@@ -136,13 +136,13 @@ Press any key to continue . . .
 
   - Utilizing x86 assembly instruction set
 
-  - Passing Parameters on the Runtime Stack Using STDCALL Calling Convention
+  - Passing parameters on the runtime stack using STDCALL calling convention
 
   - Proper use of registers and stack management for conflict avoidance
 
-  - Implementing Coding Style and Documentation:
+  - Implementing coding style and documentation:
 
-  - Comprehension and Use of External Libraries
+  - Comprehension and use of external libraries
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
