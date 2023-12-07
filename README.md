@@ -162,7 +162,7 @@ Project Link: [https://github.com/lubranoa/CS-271-F21-Portfolio-Project][repo-ur
 
   - [Intel 64 and IA-32 Architectures Software Developer’s Manual][ia-32-man-url]
   - [Microsoft Macro Assembler (MASM) Reference][masm-url]
-  - ["Getting Started with MASM and Visual Studio 2019"][asm-irvine-url]
+  - ["Getting Started with MASM and Visual Studio 2019" by Kip Irvine][asm-irvine-url]
   - [Visual Studio 2019][vs-url]
   - [CS 271 Style Guide](/docs/CS271%20Style%20Guide.pdf)
   - [Shields.io][shields-url]
