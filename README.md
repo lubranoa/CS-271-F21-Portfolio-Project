@@ -17,9 +17,9 @@
   </p>
   <br />
   <!-- Titles and Subtitles -->
-  <h1 align="center">Designing Low-Level I/O Procedures in Assembly</h1>
+  <h1 align="center">Low-Level I/O and String Processing MASM Program</h1>
   <p align="center">
-    <b>An Interactive Program in MASM-style x86-32 Assembly for Data Input, Validation, and Manipulation using String Primitives and Macros</b>
+    <b>An Interactive Program in MASM-style x86-32 Assembly for Data Input, Validation, and Manipulation using String Primitives and custom Macros</b>
   </p>
   <p align="center">
     Fall 2021 · <a href="https://ecampus.oregonstate.edu/soc/ecatalog/ecoursedetail.htm?subject=CS&coursenumber=271&termcode=ALL">CS 271 - Computer Architecture and Assembly Language </a> · Oregon State University
