@@ -44,7 +44,7 @@
 <!-- Project Description -->
 ## Project Description
 
-This program is an x86 assembly language program designed to perform string processing and low-level I/O operations. It involves the implementation of macros for string processing and procedures for handling signed integers using string primitive instructions. The program gets some user input of signed integers, validates each, then shows the user the numbers they entered along with the results of some arithmetic operations using those numbers. The program is formatted in accordance with the [CS271 Style Guide](/docs/CS271%20Style%20Guide.pdf).
+This is an MASM program, written using the x86-32 instruction set, designed to perform string processing and low-level I/O operations. It involves the implementation of macros for string processing and procedures for handling signed integers using string primitive instructions. The program gets some user input of signed integers, validates each, then shows the user the numbers they entered along with the results of some arithmetic operations using those numbers. The program is formatted in accordance with the [CS271 Style Guide](/docs/CS271%20Style%20Guide.pdf).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -128,7 +128,7 @@ Press any key to continue . . .
 <!-- Skills Applied -->
 ## Skills Applied
 
-  - String processing with string primitive instructions:
+  - String processing with string primitive instructions
 
   - Implementation and usage of assembly macros
 
@@ -142,7 +142,7 @@ Press any key to continue . . .
 
   - Proper use of registers and stack management for conflict avoidance
 
-  - Implementing coding style and documentation:
+  - Implementing coding style and documentation
 
   - Comprehension and use of external libraries
 
@@ -172,7 +172,7 @@ Project Link: [https://github.com/lubranoa/CS-271-F21-Portfolio-Project][repo-ur
 
 <!-- Markdown links -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[x86-asm]: https://img.shields.io/badge/x86--32_Assembly_Language-grey?style=for-the-badge
+[x86-asm]: https://img.shields.io/badge/x86--32_Instruction_Set-grey?style=for-the-badge
 [x86-asm-url]: https://www.intel.com/content/www/us/en/content-details/782158/intel-64-and-ia-32-architectures-software-developer-s-manual-combined-volumes-1-2a-2b-2c-2d-3a-3b-3c-3d-and-4.html?wapkw=intel%2064%20and%20ia-32%20architectures%20software%20developer%27s%20manual&docid=782159
 
 [masm]: https://img.shields.io/badge/Microsoft_Macro_Assembler_(MASM)-grey?style=for-the-badge
