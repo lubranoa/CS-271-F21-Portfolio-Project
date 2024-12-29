@@ -44,7 +44,7 @@
 <!-- Project Description -->
 ## Project Description
 
-This is an MASM program, written using the x86-32 instruction set, designed to perform string processing and low-level I/O operations. It involves the implementation of macros for string processing and procedures for handling signed integers using string primitive instructions. The program gets some user input of signed integers, validates each, then shows the user the numbers they entered along with the results of some arithmetic operations using those numbers. The program is formatted in accordance with the [CS271 Style Guide](/docs/CS271%20Style%20Guide.pdf).
+This x86 assembly language program facilitates user input of signed integers, validates the input, and performs arithmetic operations such as summation and average calculation. It utilizes custom macros for string processing and employs string primitive instructions to handle signed integers. Users are prompted to input signed integers, which the program validates and then displays alongside the results of arithmetic operations performed on the entered numbers. The code adheres to the [CS271 Style Guide](/docs/CS271%20Style%20Guide.pdf), ensuring consistent formatting and documentation.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -54,7 +54,6 @@ This is an MASM program, written using the x86-32 instruction set, designed to p
    - [![x86-asm][x86-asm]][x86-asm-url]
    - [![irvine32][irvine32]][irvine32-url] (Pre-built I/O procedures)
    - [![masm][masm]][masm-url]
-   - [![visual-studio][visual-studio]][visual-studio-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -80,7 +79,7 @@ This is an MASM program, written using the x86-32 instruction set, designed to p
 <!-- Usage -->
 ## Usage
 
-To use this program, the project must be opened in Visual Studio 2019 using the project's [solution file](/Project.sln). The program will not work unless the Irvine32 Library has been successfully extracted into the `C:\` directory, which was the required installation location for this course. The `Irvine.zip` file can be downloaded from the web page ["Getting Started with MASM and Visual Studio 2019"][asm-irvine-url] by Kip Irvine. This also contains environment setup and running instructions that may be different than what the professor of CS 271 required.
+To use this program, the project was to be opened in Visual Studio 2019 using the project's [solution file](/Project.sln). The program will not work unless the Irvine32 Library has been successfully extracted into the `C:\` directory, which was the required installation location for this course. The `Irvine.zip` file can be downloaded from the web page ["Getting Started with MASM and Visual Studio 2019"][asm-irvine-url] by Kip Irvine. This also contains environment setup and running instructions that may be different than what the professor of CS 271 required.
 
 To run the program after opening `Project.sln` in Visual Studio, go to debug and select 'Run Without Debugging' or press `Ctrl` + `F5`. Then, follow directions until the end of the program. The output should look like the example below.
 
