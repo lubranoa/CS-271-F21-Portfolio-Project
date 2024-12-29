@@ -60,28 +60,44 @@ This x86 assembly language program facilitates user input of signed integers, va
 <!-- Features -->
 ## Features
 
-  - Prints an introduction and instructions to show the user hello and how to use the program.
-
-  - Validates each of the entered signed decimal integers for incorrect characters.
-
-  - Converts the strings to integers to calculate the sum and truncated average of the numbers.
-
-  - Prints the numbers and results of the calculations back to the user and exits.
-
-  - All strings are printed to the user using a macro.
+  - Processes user input using custom macros for efficient string handling.
   
-  - All user input is captured using using a macro.
-
-  - Uses some pre-built Input/Output procedures from the Irvine32 Library.
+  - Validates user input to ensure correct signed integer format.
+  
+  - Performs arithmetic operations including summation and average calculation on validated integers.
+  
+  - Displays results of arithmetic operations alongside the original user inputs.
+  
+  - Adheres to the CS271 Style Guide for consistent code formatting and documentation.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- Usage -->
 ## Usage
 
-To use this program, the project was to be opened in Visual Studio 2019 using the project's [solution file](/Project.sln). The program will not work unless the Irvine32 Library has been successfully extracted into the `C:\` directory, which was the required installation location for this course. The `Irvine.zip` file can be downloaded from the web page ["Getting Started with MASM and Visual Studio 2019"][asm-irvine-url] by Kip Irvine. This also contains environment setup and running instructions that may be different than what the professor of CS 271 required.
+To utilize this program, follow the steps below:
 
-To run the program after opening `Project.sln` in Visual Studio, go to debug and select 'Run Without Debugging' or press `Ctrl` + `F5`. Then, follow directions until the end of the program. The output should look like the example below.
+1. **Prerequisites:**
+   - Ensure that the Irvine32 Library is installed in the `C:\` directory, as required for this course. You can download the Irvine.zip file from Kip Irvine's [Getting Started with MASM and Visual Studio 2019](https://kipirvine.com/asm/gettingStartedVS2019/index.htm) webpage.
+
+2. **Setup:**
+   - Open Visual Studio 2019.
+   - Load the project by opening the `Project.sln` solution file.
+   - Verify that the Irvine32 Library is correctly installed in the `C:\` directory.
+
+3. **Running the Program:**
+   - Navigate to the 'Debug' menu.
+   - Select 'Start Without Debugging' or press `Ctrl + F5`.
+   - Follow the on-screen instructions provided by the program.
+
+4. **Sample Output:**
+   - Upon running the program, you will be prompted to enter ten signed decimal integers.
+   - After inputting the numbers, the program will display:
+     - The list of entered integers.
+     - The sum of the integers.
+     - The truncated average of the integers.
+
+   Below is an example of the expected output:
 
 ```
 Written by: Alexander Lubrano
@@ -127,23 +143,15 @@ Press any key to continue . . .
 <!-- Skills Applied -->
 ## Skills Applied
 
-  - String processing with string primitive instructions
+  - Developed proficiency in string manipulation using x86-32 assembly language string primitive instructions.
 
-  - Implementation and usage of assembly macros
+  - Designed and implemented custom macros to streamline user input handling and output display.
 
-  - User input validation and string to numeric conversions of input
+  - Executed user input validation and conversion to ensure accurate processing of signed integers within 32-bit register constraints.
 
-  - Implementing low-level I/O procedures
+  - Applied low-level input/output procedures to manage data exchange between the program and the user effectively.
 
-  - Utilizing x86 assembly instruction set
-
-  - Passing parameters on the runtime stack using STDCALL calling convention
-
-  - Proper use of registers and stack management for conflict avoidance
-
-  - Implementing coding style and documentation
-
-  - Comprehension and use of external libraries
+  - Adhered to the CS271 Style Guide to maintain consistent code formatting and documentation standards.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
